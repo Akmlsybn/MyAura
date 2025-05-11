@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">MyAura</string>
+    <string name="tagline">Bangun Identitas Digital Anda</string>
+    <string name="next">Selanjutnya</string>
+    <string name="Welcome_sign">Selamat Datang</string>
+
+    <string name="onboard_1">Tunjukkan siapa dirimu.\nTampilkan akun yang kamu pilih."</string>
+    <string name="welcome">Buat profil yang mencerminkan dirimu dan terhubung dengan dunia profesional</string>
+
+    <string name="onboard_2">Tampilan Portofolio Mu</string>
+    <string name="welcome2">Unggah proyek, sertifikat, atau pencapaian yang menunjukkan potensimu.</string>
+
+    <string name="onboard_3">Tuangkan Pemikiranmu</string>
+    <string name="welcome3">Buat profil yang mencerminkan dirimu dan terhubung dengan dunia profesional.</string>
+
+    <string name="L_Email">Email</string>
+    <string name="L_Pass">Password</string>
+    <string name="SignUp">Mendaftar</string>
+
+    <string name="code">Kode</string>
+    <string name="enter_code">Masukkan Kode Disini</string>
+    
+    <string name="forgot_password">Lupa Password?</string>
+    <string name="SignUp_2">Buat Akun Baru Disini</string>
+    <string name="Or">Atau</string>
+    <string name="Google">Lanjutkan dengan Google</string>
+    <string name="SignIn">Masuk</string>
+    <string name="SignIn_2">Sudah punya akun? Masuk</string>
+    <string name="FPass_1">Kami akan mengirimkan Kode Verifikasi ke email jika cocok dengan akun yang ada</string>
+    <string name="name">Nama</string>
+    <string name="SignUp_3">Belum Punya Akun? Daftar</string>
+    <string name="FPass_2">Periksa Email yang dimasukkan untuk Kode Verifikasi</string>
+
+    <string name="EditPP">Edit Foto</string>
+    <string name="JobNow">Pekerjaan Sekarang</string>
+    <string name="tagline_pp">Tagline</string>
+    <string name="youtube">Youtube</string>
+    <string name="instagram">Instagram</string>
+    <string name="facebook">Facebook</string>
+    <string name="Save">Simpan</string>
+</resources>

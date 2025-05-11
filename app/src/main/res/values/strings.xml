@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">MyAura</string>
+    <string name="next">Next</string>
+    <string name="tagline">Build Your Digital Identity</string>
+    <string name="onboard_1">Show who you are.\nShow the account you selected.</string>
+    <string name="welcome">Create a profile that reflects you and connects you to the professional world.</string>
+    
+    <string name="onboard_2">Your Portfolio View</string>
+    <string name="welcome2">Upload projects, certificates, or achievements that demonstrate your potential.</string>
+    
+    <string name="onboard_3">Pour Out Your Thoughts</string>
+    <string name="welcome3">Create a profile that reflects you and connects you to the professional world.</string>
+
+    <string name="Welcome_sign">Welcome</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="L_Email">Email</string>
+    <string name="L_Pass">Password</string>
+    <string name="SignUp">Sign Up</string>
+    <string name="SignUp_2">Create a new account here</string>
+    <string name="Or">Or</string>
+    <string name="Google">Continue With Google</string>
+    <string name="SignIn">Sign In</string>
+    <string name="SignIn_2">Already have an account? Sign in</string>
+    <string name="FPass_1">We will send a Verification Code to your email if it matches your existing account.</string>
+    <string name="name">Name</string>
+    <string name="SignUp_3">Did Not Have Account Yet? Sign Up</string>
+    <string name="code">Code</string>
+    <string name="enter_code">Enter Code Here</string>
+    <string name="FPass_2">Check the Email entered for Verification Code</string>
+
+    <string name="EditPP">Edit Photo</string>
+    <string name="JobNow">Job Now</string>
+    <string name="tagline_pp">Tagline</string>
+    <string name="youtube">Youtube</string>
+    <string name="instagram">Instagram</string>
+    <string name="facebook">Facebook</string>
+    <string name="Save">Save</string>
+</resources>
