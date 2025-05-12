@@ -36,9 +36,6 @@ fun ProfileScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(16.dp))
             ProfileTabs(navController)
-
-            Spacer(modifier = Modifier.height(16.dp))
-            ArticleContent(navController)
         }
     }
 }
