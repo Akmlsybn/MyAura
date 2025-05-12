@@ -17,15 +17,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.myaura.R
 
 @Composable
-fun SplashScreen (
-    onNavigateNext: () -> Unit
-) {
+fun SplashScreen(navController: NavController) {
     LaunchedEffect(Unit) {
         delay(2000L)
-        onNavigateNext()
+        navController.navigate("onboarding1")
     }
     Box(
         modifier = Modifier

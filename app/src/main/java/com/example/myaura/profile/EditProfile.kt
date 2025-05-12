@@ -30,10 +30,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.myaura.R
 
 @Composable
-fun EditPP(){
+fun EditPP(
+    navController: NavController
+){
     var name by remember { mutableStateOf("")  }
     var job by remember { mutableStateOf("") }
     var tagline by remember { mutableStateOf("") }
@@ -121,7 +125,9 @@ fun EditPP(){
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = { },
+            onClick = {
+                navController.navigate("profile_page")
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
@@ -133,8 +139,9 @@ fun EditPP(){
     }
 }
 
-@Preview (showBackground = true)
+@Preview(showBackground = true)
 @Composable
-fun EditPPreview(){
-    EditPP()
+fun EditPPreview() {
+    val navController = rememberNavController()
+    EditPP(navController = navController)
 }

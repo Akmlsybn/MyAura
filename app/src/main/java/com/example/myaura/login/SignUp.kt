@@ -1,54 +1,44 @@
 package com.example.myaura.login
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.myaura.R
 
 @Composable
-fun SignUp (
-    onNavigate: (String) -> Unit
+fun SignUp(
+    navController: NavHostController
 ) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    Column (
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
-    ){
+    ) {
         Spacer(modifier = Modifier.height(64.dp))
 
         Text(
@@ -59,14 +49,16 @@ fun SignUp (
         )
         Spacer(modifier = Modifier.height(12.dp))
 
-        Column (horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxWidth()){
+        Column(horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxWidth()) {
             Text(text = stringResource(R.string.SignUp), fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
-            Text(text = stringResource(R.string.SignUp_2), fontSize = 14.sp, color = Color.Black, fontWeight = FontWeight.Normal )
+            Text(text = stringResource(R.string.SignUp_2), fontSize = 14.sp, color = Color.Black, fontWeight = FontWeight.Normal)
         }
+        Spacer(modifier = Modifier.height(8.dp))
+
         OutlinedTextField(
             value = name,
-            onValueChange = {name=it},
-            label = {Text(stringResource(R.string.name))},
+            onValueChange = { name = it },
+            label = { Text(stringResource(R.string.name)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 4.dp),
@@ -74,9 +66,10 @@ fun SignUp (
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Text)
         )
         Spacer(modifier = Modifier.height(8.dp))
+
         OutlinedTextField(
             value = email,
-            onValueChange = {email = it},
+            onValueChange = { email = it },
             label = { Text(stringResource(R.string.L_Email)) },
             modifier = Modifier
                 .fillMaxWidth()
@@ -85,9 +78,10 @@ fun SignUp (
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email)
         )
         Spacer(modifier = Modifier.height(8.dp))
+
         OutlinedTextField(
             value = password,
-            onValueChange = {password = it},
+            onValueChange = { password = it },
             label = { Text(stringResource(R.string.L_Pass)) },
             modifier = Modifier
                 .fillMaxWidth()
@@ -96,20 +90,22 @@ fun SignUp (
             visualTransformation = PasswordVisualTransformation()
         )
         Spacer(modifier = Modifier.height(16.dp))
+
         Button(
-            onClick = {},
+            onClick = { navController.navigate("home") }, // Pindah ke halaman home setelah signup
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp)
         ) {
             Text(stringResource(R.string.SignUp), fontWeight = FontWeight.SemiBold)
         }
-        Spacer(modifier = Modifier.height(8.dp))
+
         Spacer(modifier = Modifier.height(16.dp))
         Text(stringResource(R.string.Or), color = Color.Black)
         Spacer(modifier = Modifier.height(16.dp))
+
         OutlinedButton(
-            onClick = {},
+            onClick = { /* Google SignUp logic here */ },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp)
@@ -122,17 +118,21 @@ fun SignUp (
             Spacer(modifier = Modifier.width(8.dp))
             Text(stringResource(R.string.Google))
         }
-        Spacer(modifier = Modifier.height(16.dp))
+
         TextButton(
-            onClick = { onNavigate("signing") }
+            onClick = { navController.navigate("signing") } // Pindah ke halaman SignIn
         ) {
             Text(stringResource(R.string.SignIn_2), color = Color.Black)
         }
     }
 }
 
+
 @Preview(showBackground = true)
 @Composable
 fun SignUpPreview() {
-    SignUp(onNavigate = {})
+    val navController = rememberNavController()
+    SignUp(navController = navController)
 }
+
+

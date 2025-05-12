@@ -13,11 +13,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.myaura.R
 
 @Composable
 fun OnBoardingScreen3(
-    onNext: () -> Unit
+    navController: NavController
 ) {
     Column(
         modifier = Modifier
@@ -48,7 +49,7 @@ fun OnBoardingScreen3(
         )
 
         Button(
-            onClick = onNext,
+            onClick = { navController.navigate("signing") },  // Navigasi ke halaman login atau halaman utama
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp)

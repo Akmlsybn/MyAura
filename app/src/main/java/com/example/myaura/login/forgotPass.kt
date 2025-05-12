@@ -25,11 +25,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.myaura.R
 
 @Composable
 fun ForgotPassScreen(
-    onNextClick: (String) -> Unit
+    navController: NavController
 ) {
     var email by remember { mutableStateOf("") }
 
@@ -78,7 +80,7 @@ fun ForgotPassScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = { onNextClick("verification") },
+            onClick = { navController.navigate("verification") }, // Navigasi ke halaman verifikasi
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
@@ -90,10 +92,11 @@ fun ForgotPassScreen(
     }
 }
 
+
 @Preview(showBackground = true)
 @Composable
 fun ForgotPassScreenPreview() {
-    ForgotPassScreen(
-        onNextClick = {}
-    )
+    val navController = rememberNavController()
+    ForgotPassScreen(navController = navController)
 }
+

@@ -25,11 +25,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.example.myaura.R
 
 @Composable
 fun Verification(
-    onNextClick: (String) -> Unit
+    navController: NavController
 ) {
     var code by remember { mutableStateOf("") }
 
@@ -79,7 +81,7 @@ fun Verification(
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = { onNextClick("verification") },
+            onClick = { navController.navigate("edit_profile") },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
@@ -91,10 +93,9 @@ fun Verification(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun VerificationPreview() {
-    Verification (
-        onNextClick = {}
-    )
+    val navController = rememberNavController()
+    Verification(navController = navController)
 }

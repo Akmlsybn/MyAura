@@ -13,11 +13,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.myaura.R
 
 @Composable
 fun OnBoardingScreen(
-    onNext: () -> Unit
+    navController: NavController
 ) {
     Column(
         modifier = Modifier
@@ -50,7 +51,11 @@ fun OnBoardingScreen(
         )
 
         Button(
-            onClick = onNext,
+            onClick = {
+                navController.navigate("onboarding2") {
+                    popUpTo("onboarding1") { inclusive = true }
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp)
@@ -59,3 +64,4 @@ fun OnBoardingScreen(
         }
     }
 }
+
