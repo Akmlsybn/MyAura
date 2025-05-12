@@ -83,7 +83,6 @@ fun MyAura() {
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun SplashPreview() {

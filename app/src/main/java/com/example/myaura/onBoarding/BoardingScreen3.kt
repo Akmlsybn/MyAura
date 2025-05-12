@@ -2,7 +2,10 @@ package com.example.myaura.onBoarding
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -15,18 +18,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.myaura.R
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun OnBoardingScreen3(
     navController: NavController
 ) {
+    val scrollState = rememberScrollState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
+            .padding(24.dp)
+            .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
+        Spacer(modifier = Modifier.height(20.dp))
+
         Image(
             painter = painterResource(id = R.drawable.onboarding3),
             contentDescription = "Illustration onboarding 3",
@@ -37,24 +46,35 @@ fun OnBoardingScreen3(
 
         Text(
             text = stringResource(R.string.onboard_3),
-            fontSize = 16.sp,
+            fontSize = 20.sp,
             fontWeight = FontWeight.SemiBold,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            color = Color(0xFF141E61)
         )
+
         Spacer(modifier = Modifier.height(8.dp))
-        Text (
+
+        Text(
             text = stringResource(R.string.welcome3),
             fontSize = 16.sp,
             textAlign = TextAlign.Center
         )
 
+        Spacer(modifier = Modifier.height(32.dp))
+
         Button(
-            onClick = { navController.navigate("signing") },  // Navigasi ke halaman login atau halaman utama
+            onClick = { navController.navigate("signing") },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(48.dp)
+                .height(48.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF141E61),
+                contentColor = Color.White
+            )
         ) {
             Text(text = stringResource(R.string.next))
         }
+
+        Spacer(modifier = Modifier.height(20.dp))
     }
 }

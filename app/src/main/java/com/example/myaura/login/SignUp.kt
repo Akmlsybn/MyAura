@@ -2,7 +2,9 @@ package com.example.myaura.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,10 +34,13 @@ fun SignUp(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
+    val scrollState = rememberScrollState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
+            .padding(24.dp)
+            .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
@@ -95,7 +100,11 @@ fun SignUp(
             onClick = { navController.navigate("home") }, // Pindah ke halaman home setelah signup
             modifier = Modifier
                 .fillMaxWidth()
-                .height(48.dp)
+                .height(48.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF141E61),
+                contentColor = Color.White
+            )
         ) {
             Text(stringResource(R.string.SignUp), fontWeight = FontWeight.SemiBold)
         }
@@ -105,7 +114,7 @@ fun SignUp(
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedButton(
-            onClick = { /* Google SignUp logic here */ },
+            onClick = { },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp)
@@ -116,7 +125,7 @@ fun SignUp(
                 modifier = Modifier.size(20.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(stringResource(R.string.Google))
+            Text(stringResource(R.string.Google), color = Color.Black)
         }
 
         TextButton(
@@ -127,12 +136,9 @@ fun SignUp(
     }
 }
 
-
 @Preview(showBackground = true)
 @Composable
 fun SignUpPreview() {
     val navController = rememberNavController()
     SignUp(navController = navController)
 }
-
-

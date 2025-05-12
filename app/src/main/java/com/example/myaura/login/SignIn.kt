@@ -2,7 +2,9 @@ package com.example.myaura.login
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,10 +33,13 @@ fun SignIn(
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
+    val scrollState= rememberScrollState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
+            .padding(24.dp)
+            .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
@@ -43,7 +48,7 @@ fun SignIn(
         Text(
             text = stringResource(R.string.app_name),
             fontSize = 36.sp,
-            color = Color(0xFF0D1B4C),
+            color = Color(0xFF141E61),
             modifier = Modifier.align(Alignment.Start)
         )
         Spacer(modifier = Modifier.height(12.dp))
@@ -78,13 +83,17 @@ fun SignIn(
             onClick = { navController.navigate("forgot") },  // Navigasi ke halaman forgot password
             modifier = Modifier.align(Alignment.Start)
         ) {
-            Text(stringResource(R.string.forgot_password), color = Color.Black)
+            Text(stringResource(R.string.forgot_password), color = Color(0xFF141E61))
         }
         Button(
-            onClick = { navController.navigate("home") },  // Setelah login berhasil, pindah ke halaman home
+            onClick = { navController.navigate("profile_page") },  // Setelah login berhasil, pindah ke halaman home
             modifier = Modifier
                 .fillMaxWidth()
-                .height(48.dp)
+                .height(48.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF141E61),
+                contentColor = Color.White
+            )
         ) {
             Text(stringResource(R.string.SignIn), fontWeight = FontWeight.SemiBold)
         }
@@ -93,7 +102,7 @@ fun SignIn(
         Text(stringResource(R.string.Or), color = Color.Black)
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedButton(
-            onClick = {}, // Tidak ada aksi untuk tombol ini, bisa diubah jika diperlukan
+            onClick = {},
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp)
@@ -104,7 +113,7 @@ fun SignIn(
                 modifier = Modifier.size(20.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(stringResource(R.string.Google))
+            Text(stringResource(R.string.Google), color = Color.Black)
         }
         TextButton(
             onClick = { navController.navigate("signup") }  // Navigasi ke halaman Sign Up
@@ -118,5 +127,5 @@ fun SignIn(
 @Composable
 fun SignInPreview() {
     val navController = rememberNavController()
-    SignIn(navController = navController) // Mengirim navController ke SignIn
+    SignIn(navController = navController)
 }

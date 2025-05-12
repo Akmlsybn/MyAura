@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
@@ -35,10 +37,12 @@ fun ForgotPassScreen(
 ) {
     var email by remember { mutableStateOf("") }
 
+    val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
+            .padding(24.dp)
+            .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
@@ -62,7 +66,7 @@ fun ForgotPassScreen(
             text = stringResource(R.string.FPass_1),
             fontSize = 14.sp,
             textAlign = TextAlign.Center,
-            color = Color.Gray,
+            color = Color.Black,
             modifier = Modifier.padding(top = 4.dp),
             lineHeight = 18.sp
         )

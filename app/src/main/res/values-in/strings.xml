@@ -39,4 +39,35 @@
     <string name="instagram">Instagram</string>
     <string name="facebook">Facebook</string>
     <string name="Save">Simpan</string>
+
+    <string name="Add_Box">+Tambah Foto/File</string>
+    <string name="Title">Judul</string>
+    <string name="Desc">Deskripsi</string>
+    <string name="Subject">Subjek</string>
+    <string name="PostAr">Posting Artikel</string>
+    <string name="AddAr">Tambah Artikel</string>
+    <string nama="EditTitle">Edit Judul</string>
+    <string name="SaveEdit">Simpan Edit</string>
+
+    <string name="add_title">Tambahkan Judul</string>
+    <string name="years_until">DD-MM-YYYY hingga DD-MM-YYYY</string>
+    <string name="skill">Keahlian</string>
+    <string name="url">URL/ID</string>
+    <string name="PostPort">Portofolio Posting</string>
+
+    <string name="dummy">Fulani</string>
+    <string name="dummy2">7h</string>
+
+    <string name="Home">Beranda</string>
+    <string name="Search">Cari</string>
+    <string name="Bookmark">Bookmark</string>
+    <string name="Article">Artikel</string>
+    <string name="Settings">Pengaturan</string>
+    <string name="Stats">Statistik</string>
+    <string name="EditProfile">Edit Profil</string>
+    <string name="dummy3">Bersertifikat Basis Data</string>
+    <string name="dummy4">01–01–2023 until 01-01-2025</string>
+    <string name="dummy5">www.example.com/certificate</string>
+    <string name="dummy6">Bersertifikat dalam desain dan pengoptimalan basis data.</string>
+
 </resources>

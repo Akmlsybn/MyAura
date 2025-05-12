@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.Button
@@ -45,14 +47,15 @@ fun EditPP(
     var facebook by remember { mutableStateOf("") }
     var youtube by remember { mutableStateOf("") }
 
+    val scrollState = rememberScrollState()
+
     Column (
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
+            .padding(24.dp)
+            .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        Spacer(modifier = Modifier.height(24.dp))
-
         Box(contentAlignment = Alignment.Center){
             Icon(
                 imageVector = Icons.Default.AccountCircle,
@@ -64,7 +67,7 @@ fun EditPP(
         Spacer(modifier = Modifier.height(8.dp))
         Button(
             onClick = {},
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF8E8EFF)),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF141E61)),
             contentPadding = PaddingValues(horizontal = 12.dp, vertical = 4.dp),
             modifier = Modifier.height(30.dp)
         ) {
@@ -132,7 +135,7 @@ fun EditPP(
                 .fillMaxWidth()
                 .height(50.dp),
             shape = RoundedCornerShape(50),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0D1B4C))
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF141E61))
         ) {
             Text(stringResource(R.string.Save), fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.White)
         }

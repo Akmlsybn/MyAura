@@ -35,4 +35,37 @@
     <string name="instagram">Instagram</string>
     <string name="facebook">Facebook</string>
     <string name="Save">Save</string>
+
+    <string name="Add_Box">+Add Image/File</string>
+    <string name="Title">Title</string>
+    <string name="Desc">Description</string>
+    <string name="Subject">Subject</string>
+    <string name="PostAr">Post Article</string>
+    <string name="AddAr">Add Article</string>
+    <string name="EditTitle">Edit Title</string>
+    <string name="SaveEdit">Save Edit</string>
+
+
+    <string name="add_title">Add Title</string>
+    <string name="years_until">DD-MM-YYYY until DD-MM-YYYY</string>
+    <string name="skill">Skill</string>
+    <string name="url">URL/ID</string>
+    <string name="PostPort">Post Portfolio</string>
+
+    <string name="dummy">Fulani</string>
+    <string name="dummy2">7h</string>
+
+    <string name="Home">Home</string>
+    <string name="Search">Search</string>
+    <string name="Bookmark">Bookmark</string>
+    <string name="Article">Article</string>
+    <string name="Settings">Settings</string>
+    <string name="Stats">Stats</string>
+    <string name="EditProfile">Edit Profile</string>
+    <string name="dummy3">Database Certified</string>
+    <string name="dummy4">01-01-2023 until 01-01-2025</string>
+    <string name="dummy5">www.example.com/certificate</string>
+    <string name="dummy6">Certified in database design and optimization.</string>
+
+
 </resources>

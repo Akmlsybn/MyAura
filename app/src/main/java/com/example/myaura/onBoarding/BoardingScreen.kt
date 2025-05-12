@@ -14,16 +14,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.ui.graphics.Color
 import com.example.myaura.R
 
 @Composable
 fun OnBoardingScreen(
     navController: NavController
 ) {
+    val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
+            .padding(24.dp)
+            .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
@@ -37,18 +43,25 @@ fun OnBoardingScreen(
                 .height(250.dp)
         )
 
+        Spacer(modifier = Modifier.height(24.dp))
+
         Text(
             text = stringResource(R.string.onboard_1),
             fontSize = 20.sp,
             fontWeight = FontWeight.SemiBold,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            color = Color(0xFF141E61)
         )
+
         Spacer(modifier = Modifier.height(8.dp))
+
         Text(
             text = stringResource(R.string.welcome),
             fontSize = 16.sp,
             textAlign = TextAlign.Center
         )
+
+        Spacer(modifier = Modifier.height(32.dp))
 
         Button(
             onClick = {
@@ -58,10 +71,15 @@ fun OnBoardingScreen(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .height(50.dp)
+                .height(48.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF141E61),
+                contentColor = Color.White
+            )
         ) {
             Text(text = stringResource(R.string.next))
         }
+
+        Spacer(modifier = Modifier.height(20.dp))
     }
 }
-

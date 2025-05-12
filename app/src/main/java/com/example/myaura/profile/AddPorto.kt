@@ -21,27 +21,34 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import com.example.myaura.R
+
 
 
 @Composable
 fun PortfolioForm(
     navController: NavController,
+
 ){
     val title = remember { mutableStateOf("") }
     val dateRange = remember { mutableStateOf("") }
     val skill = remember { mutableStateOf("") }
     val url = remember { mutableStateOf("") }
     val description = remember { mutableStateOf("") }
-
+    val scrollState = rememberScrollState()
     Column (
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFF1F5F9))
             .padding(horizontal = 24.dp)
-            .padding(top = 64.dp),
+            .padding(top = 64.dp)
+            .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         Box(
@@ -52,7 +59,7 @@ fun PortfolioForm(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "+\nAdd Image/File",
+                text = stringResource(R.string.Add_Box),
                 textAlign = TextAlign.Center,
                 color = Color.DarkGray
             )
@@ -91,7 +98,7 @@ fun PortfolioForm(
         OutlinedTextField(
             value = description.value,
             onValueChange = { description.value = it },
-            label = { Text("Description") },
+            label = { Text(stringResource(R.string.Desc)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp)
@@ -107,7 +114,7 @@ fun PortfolioForm(
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0D1B66)),
             shape = RoundedCornerShape(24.dp)
         ) {
-            Text("Post Portfolio", color = Color.White)
+            Text(stringResource(R.string.PostPort), color = Color.White)
         }
     }
 }

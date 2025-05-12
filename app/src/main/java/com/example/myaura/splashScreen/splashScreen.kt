@@ -24,15 +24,20 @@ import com.example.myaura.R
 fun SplashScreen(navController: NavController) {
     LaunchedEffect(Unit) {
         delay(2000L)
-        navController.navigate("onboarding1")
+        navController.navigate("onboarding1") {
+            popUpTo("splash") { inclusive = true }
+        }
     }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White),
         contentAlignment = Alignment.Center
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Text(
                 text = stringResource(R.string.app_name),
                 color = Color(0xFF141E61),
@@ -44,8 +49,9 @@ fun SplashScreen(navController: NavController) {
                 text = stringResource(R.string.tagline),
                 color = Color.Black,
                 fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Medium
             )
         }
     }
 }
+
