@@ -6,24 +6,23 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
+import dagger.hilt.android.AndroidEntryPoint
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.myaura.onBoarding.OnBoardingScreen
-import com.example.myaura.onBoarding.OnBoardingScreen2
-import com.example.myaura.onBoarding.OnBoardingScreen3
-import com.example.myaura.splashScreen.SplashScreen
-import com.example.myaura.login.SignIn
+import com.example.myaura.ui.splash.SplashScreen
+import com.example.myaura.ui.login.SignIn
 import com.example.myaura.ui.theme.MyAuraTheme
-import com.example.myaura.login.ForgotPassScreen
-import com.example.myaura.login.SignUp
-import com.example.myaura.login.Verification
-import com.example.myaura.profile.AddArticle
-import com.example.myaura.profile.EditArticle
-import com.example.myaura.profile.EditFormPort
-import com.example.myaura.profile.EditPP
-import com.example.myaura.profile.PortfolioForm
-import com.example.myaura.profile.ProfileScreen
+import com.example.myaura.ui.login.ForgotPassScreen
+import com.example.myaura.ui.login.SignUp
+import com.example.myaura.ui.onboarding.OnboardingScreen
+import com.example.myaura.ui.profile.article.AddArticle
+import com.example.myaura.ui.profile.article.EditArticle
+import com.example.myaura.ui.profile.portfolio.EditFormPort
+import com.example.myaura.ui.profile.portfolio.PortfolioForm
+import com.example.myaura.ui.profile.ProfileScreen
+import com.example.myaura.ui.profile.edit.EditProfileScreen
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,14 +40,8 @@ fun MyAura() {
         composable("splash") {
             SplashScreen(navController = navController)
         }
-        composable("onboarding1") {
-            OnBoardingScreen (navController = navController)
-        }
-        composable("onboarding2") {
-            OnBoardingScreen2 (navController = navController)
-        }
-        composable("onboarding3") {
-            OnBoardingScreen3 (navController = navController)
+        composable("onboarding") {
+            OnboardingScreen(navController = navController)
         }
         composable("signing") {
             SignIn(navController = navController)
@@ -59,11 +52,8 @@ fun MyAura() {
         composable("forgot") {
             ForgotPassScreen(navController = navController)
         }
-        composable("verification") {
-            Verification  (navController=navController)
-        }
         composable("edit_profile") {
-            EditPP (navController = navController)
+            EditProfileScreen (navController = navController)
         }
         composable("profile_page"){
             ProfileScreen(navController = navController)
