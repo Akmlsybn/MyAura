@@ -5,22 +5,23 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavType
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.myaura.ui.splash.SplashScreen
 import com.example.myaura.ui.login.SignIn
 import com.example.myaura.ui.theme.MyAuraTheme
-import com.example.myaura.ui.login.ForgotPassScreen
 import com.example.myaura.ui.login.SignUp
 import com.example.myaura.ui.onboarding.OnboardingScreen
 import com.example.myaura.ui.profile.article.AddArticle
 import com.example.myaura.ui.profile.article.EditArticle
-import com.example.myaura.ui.profile.portfolio.EditFormPort
 import com.example.myaura.ui.profile.portfolio.PortfolioForm
 import com.example.myaura.ui.profile.ProfileScreen
 import com.example.myaura.ui.profile.edit.EditProfileScreen
+import com.example.myaura.ui.profile.portfolio.EditPortfolio
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -49,9 +50,6 @@ fun MyAura() {
         composable("signup") {
             SignUp(navController = navController)
         }
-        composable("forgot") {
-            ForgotPassScreen(navController = navController)
-        }
         composable("edit_profile") {
             EditProfileScreen (navController = navController)
         }
@@ -61,13 +59,19 @@ fun MyAura() {
         composable("add_portfolio") {
             PortfolioForm(navController = navController)
         }
-        composable("edit_portfolio"){
-            EditFormPort(navController = navController)
+        composable(
+            route = "edit_portfolio/{portfolioId}",
+            arguments = listOf(navArgument("portfolioId") { type = NavType.StringType })
+        ) {
+            EditPortfolio(navController = navController)
         }
         composable("add_article"){
             AddArticle(navController = navController)
         }
-        composable("edit_article"){
+        composable(
+            route = "edit_article/{articleId}",
+            arguments = listOf(navArgument("articleId") { type = NavType.StringType })
+        ) {
             EditArticle(navController = navController)
         }
     }

@@ -45,7 +45,7 @@ fun SignIn(
 
     LaunchedEffect(key1 = signInState) {
         if (signInState.isSuccess) {
-            navController.navigate("edit_profile") { popUpTo(0) }
+            navController.navigate("profile_page") { popUpTo(0) }
         }
         signInState.error?.let { errorMessage ->
             Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
@@ -96,12 +96,6 @@ fun SignIn(
             singleLine = true,
             visualTransformation = PasswordVisualTransformation()
         )
-        TextButton(
-            onClick = { navController.navigate("forgot") },
-            modifier = Modifier.align(Alignment.Start)
-        ) {
-            Text(stringResource(R.string.forgot_password), color = Color(0xFF141E61))
-        }
         Button(
             onClick = { viewModel.onSignInClicked(email, password)},
             modifier = Modifier

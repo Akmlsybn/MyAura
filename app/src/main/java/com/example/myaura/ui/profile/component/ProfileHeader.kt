@@ -29,10 +29,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.myaura.domain.model.UserProfile
 import com.example.myaura.R
 
 @Composable
-fun ProfileHeader(navController: NavController) {
+fun ProfileHeader(
+    navController: NavController,
+    userProfile: UserProfile
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -72,17 +76,29 @@ fun ProfileHeader(navController: NavController) {
         Column(
             modifier = Modifier.weight(1f)
         ) {
-            Text("Fulani", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(8.dp))
-            Text("Programmer/IT Consultant", fontSize = 14.sp, color = Color.DarkGray)
+            Text(userProfile.name,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                "Just living my life. One day at a time.",
+                userProfile.job,
+                fontSize = 14.sp,
+                color = Color.DarkGray
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                userProfile.tagline,
                 fontSize = 12.sp,
                 color = Color.Gray,
                 maxLines = 2
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                text = userProfile.bio,
+                fontSize = 12.sp,
+                color = Color.Gray,
+                maxLines = 3
+            )
 
             Row (
                 verticalAlignment = Alignment.CenterVertically

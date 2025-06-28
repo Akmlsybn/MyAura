@@ -23,13 +23,5 @@ class AuthRepositoryImpl (
             Result.failure(e)
         }
     }
-
-    override suspend fun sendPasswordReset(email: String): Result<Unit> {
-        return try {
-            Result.success(Unit)
-        }catch (e: Exception){
-            Result.failure(e)
-        }
-    }
 }
 

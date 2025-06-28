@@ -1,15 +1,26 @@
 package com.example.myaura.di
 
 import com.example.myaura.data.remote.AuthRemoteDataSource
+import com.example.myaura.data.remote.ImgurApiService
 import com.example.myaura.data.remote.ProfileRemoteDataSource
 import com.example.myaura.domain.repository.AuthRepository
 import com.example.myaura.data.repository.AuthRepositoryImpl
 import com.example.myaura.data.repository.ProfileRepositoryImpl
 import com.example.myaura.domain.repository.ProfileRepository
-import com.example.myaura.domain.usecase.ForgotPasswordUseCase
+import com.example.myaura.domain.usecase.AddArticleUseCase
+import com.example.myaura.domain.usecase.AddPortfolioUseCase
+import com.example.myaura.domain.usecase.DeleteArticleUseCase
+import com.example.myaura.domain.usecase.DeletePortfolioUseCase
+import com.example.myaura.domain.usecase.GetArticleUseCase
+import com.example.myaura.domain.usecase.GetArticlesUseCase
+import com.example.myaura.domain.usecase.GetPortfolioUseCase
+import com.example.myaura.domain.usecase.GetPortfoliosUseCase
+import com.example.myaura.domain.usecase.GetUserProfileUseCase
 import com.example.myaura.domain.usecase.SaveUserProfileUseCase
 import com.example.myaura.domain.usecase.SignInUseCase
 import com.example.myaura.domain.usecase.SignUpUseCase
+import com.example.myaura.domain.usecase.UpdateArticleUseCase
+import com.example.myaura.domain.usecase.UpdatePortfolioUseCase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -18,6 +29,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -39,9 +52,6 @@ object AppModule {
     fun provideSignInUseCase(repo: AuthRepository): SignInUseCase = SignInUseCase(repo)
 
     @Provides @Singleton
-    fun provideForgotPasswordUseCase(repo: AuthRepository): ForgotPasswordUseCase = ForgotPasswordUseCase(repo)
-
-    @Provides @Singleton
     fun provideFirestore(): FirebaseFirestore = Firebase.firestore
 
     @Provides @Singleton
@@ -53,4 +63,45 @@ object AppModule {
     @Provides @Singleton
     fun provideSaveUserProfileUseCase(repo: ProfileRepository): SaveUserProfileUseCase = SaveUserProfileUseCase(repo)
 
+    @Provides @Singleton
+    fun provideGetUserProfileUseCase(repo: ProfileRepository): GetUserProfileUseCase = GetUserProfileUseCase(repo)
+
+    @Provides @Singleton
+    fun provideAddPortfolioUseCase(repo: ProfileRepository): AddPortfolioUseCase = AddPortfolioUseCase(repo)
+
+    @Provides @Singleton
+    fun provideGetPortfoliosUseCase(repo: ProfileRepository): GetPortfoliosUseCase = GetPortfoliosUseCase(repo)
+
+    @Provides @Singleton
+    fun provideDeletePortfolioUseCase(repo: ProfileRepository): DeletePortfolioUseCase = DeletePortfolioUseCase(repo)
+
+    @Provides @Singleton
+    fun provideGetPortfolioUseCase(repo: ProfileRepository): GetPortfolioUseCase = GetPortfolioUseCase(repo)
+
+    @Provides @Singleton
+    fun provideUpdatePortfolioUseCase(repo: ProfileRepository): UpdatePortfolioUseCase = UpdatePortfolioUseCase(repo)
+
+    @Provides @Singleton
+    fun provideAddArticleUseCase(repo: ProfileRepository): AddArticleUseCase = AddArticleUseCase(repo)
+
+    @Provides @Singleton
+    fun provideGetArticlesUseCase(repo: ProfileRepository): GetArticlesUseCase = GetArticlesUseCase(repo)
+
+    @Provides @Singleton
+    fun provideUpdateArticleUseCase(repo: ProfileRepository): UpdateArticleUseCase = UpdateArticleUseCase(repo)
+
+    @Provides @Singleton
+    fun provideDeleteArticleUseCase(repo: ProfileRepository): DeleteArticleUseCase = DeleteArticleUseCase(repo)
+
+    @Provides @Singleton
+    fun provideGetArticleUseCase(repo: ProfileRepository): GetArticleUseCase = GetArticleUseCase(repo)
+
+    @Provides @Singleton
+    fun provideImgurApiService(): ImgurApiService {
+        return Retrofit.Builder()
+            .baseUrl("https://api.imgur.com/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ImgurApiService::class.java)
+    }
 }

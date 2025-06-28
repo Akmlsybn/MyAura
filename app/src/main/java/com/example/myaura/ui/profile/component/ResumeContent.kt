@@ -1,52 +1,72 @@
 package com.example.myaura.ui.profile.component
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.example.myaura.R
+import com.example.myaura.domain.model.PortfolioItem
+import com.example.myaura.ui.profile.ProfileState
+import com.example.myaura.ui.profile.ProfileViewModel
 
 @Composable
-fun ResumeContent(navController: NavController){
+fun ResumeContent(
+    navController: NavController,
+    viewModel: ProfileViewModel = hiltViewModel()
+) {
+    val profileState by viewModel.profileState.collectAsState()
+
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var portfolioToDelete by remember { mutableStateOf<PortfolioItem?>(null) }
+
+    if (showDeleteDialog && portfolioToDelete != null) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Konfirmasi Hapus") },
+            text = { Text("Apakah Anda yakin ingin menghapus portofolio '${portfolioToDelete?.title}'?") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        portfolioToDelete?.id?.let { viewModel.deletePortfolio(it) }
+                        showDeleteDialog = false
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
+                ) {
+                    Text("Hapus")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showDeleteDialog = false }) {
+                    Text("Batal")
+                }
+            }
+        )
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 4.dp)
+            .padding(horizontal = 16.dp)
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -55,70 +75,62 @@ fun ResumeContent(navController: NavController){
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 16.sp
             )
-            Spacer(modifier = Modifier.width(8.dp))
             IconButton(onClick = { navController.navigate("add_portfolio") }) {
                 Icon(Icons.Default.Add, contentDescription = "Add Portfolio")
             }
-            IconButton(onClick = {navController.navigate("edit_portfolio") }) {
-                Icon(Icons.Default.Edit, contentDescription = "Edit Portfolio")
-            }
-            IconButton(onClick = { }) {
-                Icon(Icons.Default.Settings, contentDescription = "Settings")
-            }
         }
-        Spacer(modifier = Modifier)
-        Column (
-            modifier = Modifier
-                .fillMaxWidth()
-        ){
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-                ){
-                    Row (
-                        verticalAlignment = Alignment.CenterVertically
-                    ){
-                        Icon(
-                            imageVector = Icons.Default.AccountCircle,
-                            contentDescription = "User Icon",
-                            modifier = Modifier
-                                .size(64.dp)
-                                .clip(CircleShape),
-                            tint = Color.Gray
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(stringResource(R.string.dummy), fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                    }
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(stringResource(R.string.dummy3), fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(stringResource(R.string.dummy4), fontSize = 12.sp, color = Color.Gray)
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(stringResource(R.string.dummy5), fontSize = 12.sp, color = Color(0xFF1E88E5))
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(stringResource(R.string.dummy6), fontSize = 14.sp)
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(150.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(Color.Gray)
-                        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        when (val state = profileState) {
+            is ProfileState.Success -> {
+                if (state.portfolios.isEmpty()) {
+                    Text("Anda belum menambahkan portofolio.", modifier = Modifier.padding(vertical = 16.dp))
+                } else {
+                    LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        items(state.portfolios, key = { it.id }) { portfolioItem ->
+                            PortfolioCard(
+                                item = portfolioItem,
+                                onDelete = {
+                                    portfolioToDelete = portfolioItem
+                                    showDeleteDialog = true
+                                },
+                                onEdit = {
+                                    navController.navigate("edit_portfolio/${portfolioItem.id}")
+                                }
+                            )
+                        }
                     }
                 }
-
+            }
+            else -> {
+            }
         }
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun ResumeContentPreview() {
-    val navController = rememberNavController()
-    ResumeContent(navController = navController)
+fun PortfolioCard(item: PortfolioItem, onDelete: () -> Unit, onEdit: () -> Unit) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = item.title, style = MaterialTheme.typography.titleMedium)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(text = item.dateRange, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(text = item.description, style = MaterialTheme.typography.bodyMedium)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(text = "Skill: ${item.skill}", style = MaterialTheme.typography.bodySmall)
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                IconButton(onClick = onEdit) {
+                    Icon(Icons.Default.Edit, contentDescription = "Edit Portfolio")
+                }
+                IconButton(onClick = onDelete) {
+                    Icon(Icons.Default.Delete, contentDescription = "Delete Portfolio")
+                }
+            }
+        }
+    }
 }

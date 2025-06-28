@@ -17,6 +17,10 @@ class SignInViewModel @Inject constructor(
     val signInState = _signInState.asStateFlow()
 
     fun onSignInClicked(email: String, pass: String) {
+        if (email.isBlank() || pass.isBlank()) {
+            _signInState.value = SignInState(error = "Email dan password tidak boleh kosong.")
+            return
+        }
         viewModelScope.launch {
             _signInState.value = SignInState(isLoading = true)
             signInUseCase(email, pass)

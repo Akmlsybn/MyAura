@@ -17,6 +17,16 @@ class SignUpViewModel @Inject constructor(
     val signUpState = _signUpState.asStateFlow()
 
     fun onSignUpClicked(email: String, pass: String) {
+        if (email.isBlank() || pass.isBlank()) {
+            _signUpState.value = SignUpState(error = "Email dan password tidak boleh kosong.")
+            return
+        }
+
+        if (pass.length < 6) {
+            _signUpState.value = SignUpState(error = "Password minimal harus 6 karakter.")
+            return
+        }
+
         viewModelScope.launch {
             _signUpState.value = SignUpState(isLoading = true)
             signUpUseCase(email, pass)
