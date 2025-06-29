@@ -92,4 +92,15 @@ class ProfileRemoteDataSource (private val firestore: FirebaseFirestore) {
         }
         return allArticles
     }
+
+    suspend fun searchUsers(query: String): List<UserProfile> {
+        return if (query.isNotBlank()) {
+            firestore.collection("users")
+                .whereGreaterThanOrEqualTo("name", query)
+                .whereLessThanOrEqualTo("name", query + '\uf8ff')
+                .get().await().toObjects(UserProfile::class.java)
+        } else {
+            emptyList()
+        }
+    }
 }

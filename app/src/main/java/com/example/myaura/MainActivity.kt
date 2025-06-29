@@ -29,17 +29,12 @@ import com.example.myaura.ui.splash.SplashScreen
 import com.example.myaura.ui.theme.MyAuraTheme
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Modifier
 import androidx.compose.foundation.layout.padding
 import com.example.myaura.ui.profile.component.BottomNavBar
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
-import androidx.compose.ui.Alignment
+import com.example.myaura.ui.profile.SearchScreen
 import com.example.myaura.ui.profile.SettingsScreen
 import com.example.myaura.ui.profile.article.ArticleListScreen
-import com.example.myaura.ui.profile.component.ArticleContent // Asumsi ini composable untuk daftar artikel
 
 
 @AndroidEntryPoint
@@ -75,7 +70,6 @@ fun MyAura() {
             composable("signup") {
                 SignUp(navController = navController)
             }
-            // **PERBAIKAN:** Langsung definisikan semua layar di sini
             composable("profile_page") {
                 ProfileScreen(mainNavController = navController)
             }
@@ -83,9 +77,7 @@ fun MyAura() {
                 Scaffold(
                     bottomBar = { BottomNavBar(navController = navController) }
                 ) { innerPadding ->
-                    Box(modifier = Modifier.fillMaxSize().padding(innerPadding), contentAlignment = Alignment.Center) {
-                        Text("Halaman Pencarian", color = MaterialTheme.colorScheme.onBackground)
-                    }
+                    SearchScreen(navController = navController, modifier = Modifier.padding(innerPadding))
                 }
             }
             composable("article_list") {

@@ -1,7 +1,6 @@
 package com.example.myaura.ui.profile
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -32,7 +31,7 @@ import com.example.myaura.ui.profile.component.ProfileTabs
 @Composable
 fun ProfileScreen(
     mainNavController: NavController, // NavController utama dari MainActivity
-    viewModel: ProfileViewModel = hiltViewModel()
+    viewModel: ProfileViewModel = hiltViewModel(),
 ) {
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
 
@@ -68,8 +67,8 @@ fun ProfileScreen(
                 Button(
                     onClick = {
                         when (val item = itemToDelete) {
-                            is PortfolioItem -> item.id?.let { viewModel.deletePortfolio(it) }
-                            is Article -> item.id?.let { viewModel.deleteArticle(it) }
+                            is PortfolioItem -> item.id.let { viewModel.deletePortfolio(it) }
+                            is Article -> item.id.let { viewModel.deleteArticle(it) }
                         }
                         showDeleteDialog = false
                         itemToDelete = null
