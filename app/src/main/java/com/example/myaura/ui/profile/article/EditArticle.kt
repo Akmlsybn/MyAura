@@ -49,76 +49,89 @@ fun EditArticle(
         }
     }
 
-    editState.error?.let {
-        Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+    val snackbarHostState = remember { SnackbarHostState() }
+    LaunchedEffect(key1 = editState.error) {
+        editState.error?.let { errorMessage ->
+            snackbarHostState.showSnackbar(
+                message = errorMessage,
+                actionLabel = "Dismiss",
+                duration = SnackbarDuration.Short
+            )
+            viewModel.onNavigationDone()
+        }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(horizontal = 24.dp, vertical = 32.dp)
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        if (editState.isLoading && editState.title.isBlank()) {
-            CircularProgressIndicator()
-        } else {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(8.dp))
-                    .clickable { imagePickerLauncher.launch("image/*") },
-                contentAlignment = Alignment.Center
-            ) {
-                val imageUrlToDisplay = remember(editState.imageUrl, newImageUri) {
-                    newImageUri?.toString() ?: editState.imageUrl
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(horizontal = 24.dp, vertical = 32.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            if (editState.isLoading && editState.title.isBlank()) {
+                CircularProgressIndicator()
+            } else {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(8.dp))
+                        .clickable { imagePickerLauncher.launch("image/*") },
+                    contentAlignment = Alignment.Center
+                ) {
+                    val imageUrlToDisplay = remember(editState.imageUrl, newImageUri) {
+                        newImageUri?.toString() ?: editState.imageUrl
+                    }
+
+                    if (imageUrlToDisplay.isNotBlank()) {
+                        AsyncImage(
+                            model = imageUrlToDisplay,
+                            contentDescription = "Cover Image",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop,
+                            placeholder = painterResource(id = R.drawable.ic_launcher_background),
+                            error = painterResource(id = R.drawable.ic_launcher_background)
+                        )
+                    } else {
+                        Text(
+                            text = "+ Ubah Gambar Sampul",
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
+                Spacer(modifier = Modifier.height(16.dp))
 
-                if (imageUrlToDisplay.isNotBlank()) {
-                    AsyncImage(
-                        model = imageUrlToDisplay,
-                        contentDescription = "Cover Image",
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop,
-                        placeholder = painterResource(id = R.drawable.ic_launcher_background),
-                        error = painterResource(id = R.drawable.ic_launcher_background)
-                    )
-                } else {
-                    Text(
-                        text = "+ Ubah Gambar Sampul",
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.height(16.dp))
+                OutlinedTextField(value = editState.title, onValueChange = { viewModel.onTitleChange(it) }, label = { Text("Judul Artikel") }, modifier = Modifier.fillMaxWidth())
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(value = editState.subTitle, onValueChange = { viewModel.onSubTitleChange(it) }, label = { Text("Sub-Judul / Deskripsi Singkat") }, modifier = Modifier.fillMaxWidth())
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(value = editState.content, onValueChange = { viewModel.onContentChange(it) }, label = { Text("Konten Artikel") }, modifier = Modifier.fillMaxWidth().height(250.dp))
 
-            OutlinedTextField(value = editState.title, onValueChange = { viewModel.onTitleChange(it) }, label = { Text("Judul Artikel") }, modifier = Modifier.fillMaxWidth())
-            Spacer(modifier = Modifier.height(8.dp))
-            OutlinedTextField(value = editState.subTitle, onValueChange = { viewModel.onSubTitleChange(it) }, label = { Text("Sub-Judul / Deskripsi Singkat") }, modifier = Modifier.fillMaxWidth())
-            Spacer(modifier = Modifier.height(8.dp))
-            OutlinedTextField(value = editState.content, onValueChange = { viewModel.onContentChange(it) }, label = { Text("Konten Artikel") }, modifier = Modifier.fillMaxWidth().height(250.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Button(
-                onClick = { viewModel.onUpdateClicked(newImageUri) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
-                enabled = !editState.isLoading,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                ),
-                shape = RoundedCornerShape(24.dp)
-            ) {
-                if (editState.isLoading) {
-                    CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
-                } else {
-                    Text(stringResource(R.string.SaveEdit))
+                Button(
+                    onClick = { viewModel.onUpdateClicked(newImageUri) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    enabled = !editState.isLoading,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    ),
+                    shape = RoundedCornerShape(24.dp)
+                ) {
+                    if (editState.isLoading) {
+                        CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
+                    } else {
+                        Text(stringResource(R.string.SaveEdit))
+                    }
                 }
             }
         }

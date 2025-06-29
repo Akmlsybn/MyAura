@@ -44,86 +44,100 @@ fun AddArticle(
     val addArticleState by viewModel.addArticleState.collectAsState()
     val context = LocalContext.current
 
-    LaunchedEffect(key1 = addArticleState) {
+    LaunchedEffect(key1 = addArticleState.isSuccess) {
         if (addArticleState.isSuccess) {
             Toast.makeText(context, "Artikel berhasil diposting!", Toast.LENGTH_SHORT).show()
             navController.popBackStack()
             viewModel.onNavigationDone()
         }
-        addArticleState.error?.let {
-            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+    }
+
+    val snackbarHostState = remember { SnackbarHostState() }
+    LaunchedEffect(key1 = addArticleState.error) {
+        addArticleState.error?.let { errorMessage ->
+            snackbarHostState.showSnackbar(
+                message = errorMessage,
+                actionLabel = "Dismiss",
+                duration = SnackbarDuration.Short
+            )
+            viewModel.onNavigationDone()
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(horizontal = 24.dp, vertical = 32.dp)
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Box(
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+    ) { innerPadding ->
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-                .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(8.dp))
-                .clickable { imagePickerLauncher.launch("image/*") },
-            contentAlignment = Alignment.Center
+                .padding(innerPadding)
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(horizontal = 24.dp, vertical = 32.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (imageUri != null) {
-                AsyncImage(
-                    model = imageUri,
-                    contentDescription = "Cover Image",
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
-            } else {
-                Text(
-                    text = "+ Tambah Gambar Sampul",
-                    textAlign = TextAlign.Center,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(8.dp))
+                    .clickable { imagePickerLauncher.launch("image/*") },
+                contentAlignment = Alignment.Center
+            ) {
+                if (imageUri != null) {
+                    AsyncImage(
+                        model = imageUri,
+                        contentDescription = "Cover Image",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Text(
+                        text = "+ Tambah Gambar Sampul",
+                        textAlign = TextAlign.Center,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
-        }
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(value = title, onValueChange = { title = it }, label = { Text(stringResource(R.string.Title)) }, modifier = Modifier.fillMaxWidth())
-        Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            value = subTitle,
-            onValueChange = { subTitle = it },
-            label = { Text("Sub-Judul / Deskripsi Singkat") },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(
-            value = content,
-            onValueChange = { content = it },
-            label = { Text("Konten Artikel") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(250.dp)
-        )
+            OutlinedTextField(value = title, onValueChange = { title = it }, label = { Text(stringResource(R.string.Title)) }, modifier = Modifier.fillMaxWidth())
+            Spacer(modifier = Modifier.height(8.dp))
+            OutlinedTextField(
+                value = subTitle,
+                onValueChange = { subTitle = it },
+                label = { Text("Sub-Judul / Deskripsi Singkat") },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            OutlinedTextField(
+                value = content,
+                onValueChange = { content = it },
+                label = { Text("Konten Artikel") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(250.dp)
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        Button(
-            onClick = { viewModel.onPostArticleClicked(title, subTitle, content, imageUri) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp),
-            enabled = !addArticleState.isLoading,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
-            ),
-            shape = RoundedCornerShape(24.dp)
-        ) {
-            if (addArticleState.isLoading) {
-                CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
-            } else {
-                Text(stringResource(R.string.PostAr))
+            Button(
+                onClick = { viewModel.onPostArticleClicked(title, subTitle, content, imageUri) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
+                enabled = !addArticleState.isLoading,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                ),
+                shape = RoundedCornerShape(24.dp)
+            ) {
+                if (addArticleState.isLoading) {
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
+                } else {
+                    Text(stringResource(R.string.PostAr))
+                }
             }
         }
     }

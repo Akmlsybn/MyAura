@@ -70,7 +70,17 @@ class EditArticleViewModel @Inject constructor(
 
     fun onUpdateClicked(newImageUri: Uri?) {
         viewModelScope.launch {
-            _editState.value = _editState.value.copy(isLoading = true)
+            val currentState = _editState.value
+            if (currentState.title.isBlank()) {
+                _editState.value = currentState.copy(error = "Judul tidak boleh kosong.")
+                return@launch
+            }
+            if (currentState.content.isBlank()) {
+                _editState.value = currentState.copy(error = "Konten tidak boleh kosong.")
+                return@launch
+            }
+
+            _editState.value = currentState.copy(isLoading = true, error = null)
             val uid = auth.currentUser?.uid ?: return@launch
 
             try {
@@ -97,7 +107,6 @@ class EditArticleViewModel @Inject constructor(
                     _editState.value.imageUrl
                 }
 
-                val currentState = _editState.value
                 val updatedArticle = Article(
                     id = articleId,
                     userId = uid,

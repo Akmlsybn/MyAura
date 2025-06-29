@@ -48,7 +48,6 @@ fun EditPortfolio(
     var showDatePicker by remember { mutableStateOf(false) }
     var datePickerTarget by remember { mutableStateOf<DatePickerTarget?>(null) }
 
-
     LaunchedEffect(key1 = editState.isSuccess) {
         if (editState.isSuccess) {
             Toast.makeText(context, "Portofolio berhasil diperbarui!", Toast.LENGTH_SHORT).show()
@@ -57,8 +56,16 @@ fun EditPortfolio(
         }
     }
 
-    editState.error?.let {
-        Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+    val snackbarHostState = remember { SnackbarHostState() }
+    LaunchedEffect(key1 = editState.error) {
+        editState.error?.let { errorMessage ->
+            snackbarHostState.showSnackbar(
+                message = errorMessage,
+                actionLabel = "Dismiss",
+                duration = SnackbarDuration.Short
+            )
+            viewModel.onNavigationDone()
+        }
     }
 
     if (showDatePicker) {
@@ -78,7 +85,6 @@ fun EditPortfolio(
                         }
                         showDatePicker = false
                     },
-                    // Menggunakan warna tema
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) { Text("OK") }
             },
@@ -90,117 +96,122 @@ fun EditPortfolio(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(horizontal = 24.dp, vertical = 32.dp)
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        if (editState.isLoading && editState.title.isBlank()) {
-            CircularProgressIndicator()
-        } else {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(8.dp))
-                    .clickable { imagePickerLauncher.launch("image/*") },
-                contentAlignment = Alignment.Center
-            ) {
-                val imageUrlToDisplay = remember(editState.imageUrl, newImageUri) {
-                    newImageUri ?: editState.imageUrl
-                }
-
-                if (imageUrlToDisplay.toString().isNotBlank()) {
-                    AsyncImage(
-                        model = imageUrlToDisplay,
-                        contentDescription = "Portfolio Image",
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop,
-                        placeholder = painterResource(id = R.drawable.ic_launcher_background),
-                        error = painterResource(id = R.drawable.ic_launcher_background)
-                    )
-                } else {
-                    Text(
-                        text = stringResource(R.string.Add_Box),
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.height(16.dp))
-
-            OutlinedTextField(value = editState.title, onValueChange = { viewModel.onTitleChange(it) }, label = { Text("Judul Portofolio") }, modifier = Modifier.fillMaxWidth())
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .padding(horizontal = 24.dp, vertical = 32.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            if (editState.isLoading && editState.title.isBlank()) {
+                CircularProgressIndicator()
+            } else {
                 Box(
                     modifier = Modifier
-                        .weight(1f)
-                        .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(4.dp))
-                        .clickable {
-                            datePickerTarget = DatePickerTarget.START
-                            showDatePicker = true
-                        }
-                        .padding(16.dp)
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(8.dp))
+                        .clickable { imagePickerLauncher.launch("image/*") },
+                    contentAlignment = Alignment.Center
                 ) {
-                    Text(text = editState.startDate, color = MaterialTheme.colorScheme.onSurface)
-                }
+                    val imageUrlToDisplay = remember(editState.imageUrl, newImageUri) {
+                        newImageUri ?: editState.imageUrl
+                    }
 
-                val isEndDateEnabled = !editState.isCurrent
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = if (isEndDateEnabled) 1f else 0.4f), RoundedCornerShape(4.dp))
-                        .clickable(enabled = isEndDateEnabled) {
-                            datePickerTarget = DatePickerTarget.END
-                            showDatePicker = true
-                        }
-                        .padding(16.dp)
+                    if (imageUrlToDisplay.toString().isNotBlank()) {
+                        AsyncImage(
+                            model = imageUrlToDisplay,
+                            contentDescription = "Portfolio Image",
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop,
+                            placeholder = painterResource(id = R.drawable.ic_launcher_background),
+                            error = painterResource(id = R.drawable.ic_launcher_background)
+                        )
+                    } else {
+                        Text(
+                            text = stringResource(R.string.Add_Box),
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+
+                OutlinedTextField(value = editState.title, onValueChange = { viewModel.onTitleChange(it) }, label = { Text("Judul Portofolio") }, modifier = Modifier.fillMaxWidth())
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(4.dp))
+                            .clickable {
+                                datePickerTarget = DatePickerTarget.START
+                                showDatePicker = true
+                            }
+                            .padding(16.dp)
+                    ) {
+                        Text(text = editState.startDate, color = MaterialTheme.colorScheme.onSurface)
+                    }
+
+                    val isEndDateEnabled = !editState.isCurrent
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = if (isEndDateEnabled) 1f else 0.4f), RoundedCornerShape(4.dp))
+                            .clickable(enabled = isEndDateEnabled) {
+                                datePickerTarget = DatePickerTarget.END
+                                showDatePicker = true
+                            }
+                            .padding(16.dp)
+                    ) {
+                        Text(
+                            text = if (editState.isCurrent) "Saat Ini" else editState.endDate,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = if (isEndDateEnabled) 1f else 0.4f)
+                        )
+                    }
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(
-                        text = if (editState.isCurrent) "Saat Ini" else editState.endDate,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = if (isEndDateEnabled) 1f else 0.4f)
+                    Checkbox(
+                        checked = editState.isCurrent,
+                        onCheckedChange = { viewModel.onIsCurrentChange(it) },
+                        colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary)
                     )
+                    Text("Sekarang", color = MaterialTheme.colorScheme.onSurface)
                 }
-            }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Checkbox(
-                    checked = editState.isCurrent,
-                    onCheckedChange = { viewModel.onIsCurrentChange(it) },
-                    colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary)
-                )
-                Text("Sekarang", color = MaterialTheme.colorScheme.onSurface)
-            }
-            Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-            OutlinedTextField(value = editState.skill, onValueChange = { viewModel.onSkillChange(it) }, label = { Text(stringResource(R.string.skill)) }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = editState.projectUrl, onValueChange = { viewModel.onUrlChange(it) }, label = { Text(stringResource(R.string.url)) }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = editState.description, onValueChange = { viewModel.onDescriptionChange(it) }, label = { Text(stringResource(R.string.Desc)) }, modifier = Modifier.fillMaxWidth().height(100.dp))
+                OutlinedTextField(value = editState.skill, onValueChange = { viewModel.onSkillChange(it) }, label = { Text(stringResource(R.string.skill)) }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = editState.projectUrl, onValueChange = { viewModel.onUrlChange(it) }, label = { Text(stringResource(R.string.url)) }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = editState.description, onValueChange = { viewModel.onDescriptionChange(it) }, label = { Text(stringResource(R.string.Desc)) }, modifier = Modifier.fillMaxWidth().height(100.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Button(
-                onClick = { viewModel.onUpdateClicked(newImageUri) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
-                enabled = !editState.isLoading,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                ),
-                shape = RoundedCornerShape(24.dp)
-            ) {
-                if (editState.isLoading) {
-                    CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
-                } else {
-                    Text(stringResource(R.string.SaveEdit))
+                Button(
+                    onClick = { viewModel.onUpdateClicked(newImageUri) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
+                    enabled = !editState.isLoading,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    ),
+                    shape = RoundedCornerShape(24.dp)
+                ) {
+                    if (editState.isLoading) {
+                        CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
+                    } else {
+                        Text(stringResource(R.string.SaveEdit))
+                    }
                 }
             }
         }

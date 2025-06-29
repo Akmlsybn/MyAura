@@ -81,7 +81,30 @@ class EditPortfolioViewModel @Inject constructor(
 
     fun onUpdateClicked(newImageUri: Uri?) {
         viewModelScope.launch {
-            _editState.value = _editState.value.copy(isLoading = true)
+            val currentState = _editState.value
+            if (currentState.title.isBlank()) {
+                _editState.value = currentState.copy(error = "Judul portofolio tidak boleh kosong.")
+                return@launch
+            }
+            if (currentState.startDate == "Tanggal Mulai" || (!currentState.isCurrent && currentState.endDate == "Tanggal Selesai")) {
+                _editState.value = currentState.copy(error = "Silakan lengkapi pilihan tanggal.")
+                return@launch
+            }
+            if (currentState.skill.isBlank()) {
+                _editState.value = currentState.copy(error = "Skill tidak boleh kosong.")
+                return@launch
+            }
+            if (currentState.projectUrl.isBlank()) {
+                _editState.value = currentState.copy(error = "URL project tidak boleh kosong.")
+                return@launch
+            }
+            if (currentState.description.isBlank()) {
+                _editState.value = currentState.copy(error = "Deskripsi tidak boleh kosong.")
+                return@launch
+            }
+
+            _editState.value = currentState.copy(isLoading = true, error = null)
+
             val uid = auth.currentUser?.uid ?: return@launch
 
             try {
@@ -108,7 +131,6 @@ class EditPortfolioViewModel @Inject constructor(
                     _editState.value.imageUrl
                 }
 
-                val currentState = _editState.value
                 val finalEndDate = if (currentState.isCurrent) "Sekarang" else currentState.endDate
                 val dateRange = "${currentState.startDate} - $finalEndDate"
 
