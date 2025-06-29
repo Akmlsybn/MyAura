@@ -1,5 +1,7 @@
 package com.example.myaura.di
 
+import android.content.Context
+import com.example.myaura.data.local.SessionRepository
 import com.example.myaura.data.remote.AuthRemoteDataSource
 import com.example.myaura.data.remote.ImgurApiService
 import com.example.myaura.data.remote.ProfileRemoteDataSource
@@ -21,6 +23,7 @@ import com.example.myaura.domain.usecase.SignInUseCase
 import com.example.myaura.domain.usecase.SignUpUseCase
 import com.example.myaura.domain.usecase.UpdateArticleUseCase
 import com.example.myaura.domain.usecase.UpdatePortfolioUseCase
+import com.example.myaura.ui.profile.article.ArticleListViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
@@ -28,6 +31,7 @@ import com.google.firebase.ktx.Firebase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -104,4 +108,11 @@ object AppModule {
             .build()
             .create(ImgurApiService::class.java)
     }
+
+    @Provides @Singleton
+    fun provideSessionRepository(@ApplicationContext context: Context): SessionRepository { return SessionRepository(context)
+    }
+
+    @Provides @Singleton
+    fun provideArticleListViewModel(profileRemoteDataSource: ProfileRemoteDataSource): ArticleListViewModel = ArticleListViewModel(profileRemoteDataSource)
 }

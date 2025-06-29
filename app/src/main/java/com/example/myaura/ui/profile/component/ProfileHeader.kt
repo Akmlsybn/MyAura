@@ -1,6 +1,8 @@
 package com.example.myaura.ui.profile.component
 
+import android.content.Intent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -12,31 +14,35 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import com.example.myaura.R
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import coil.compose.AsyncImage
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.myaura.domain.model.UserProfile
-import com.example.myaura.R
+import androidx.core.net.toUri
 
 @Composable
 fun ProfileHeader(
     navController: NavController,
     userProfile: UserProfile
 ) {
+    val context = LocalContext.current
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -46,13 +52,15 @@ fun ProfileHeader(
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(
-                imageVector = Icons.Default.AccountCircle,
+            AsyncImage(
+                model = userProfile.profilePictureUrl.ifEmpty { R.drawable.ic_launcher_background },
                 contentDescription = "Profile Picture",
                 modifier = Modifier
                     .size(80.dp)
                     .clip(CircleShape),
-                tint = Color.Gray
+                contentScale = ContentScale.Crop,
+                placeholder = painterResource(id = R.drawable.ic_launcher_background),
+                error = painterResource(id = R.drawable.ic_launcher_background)
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -65,9 +73,12 @@ fun ProfileHeader(
                     .height(32.dp),
                 contentPadding = PaddingValues(horizontal = 12.dp),
                 shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF141E61))
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary // Warna teks tombol
+                )
             ) {
-                Text(stringResource(R.string.EditProfile), fontSize = 12.sp, color = Color.White)
+                Text(stringResource(R.string.EditProfile), fontSize = 12.sp)
             }
         }
 
@@ -76,67 +87,85 @@ fun ProfileHeader(
         Column(
             modifier = Modifier.weight(1f)
         ) {
-            Text(userProfile.name,
+            // 1. Tambahkan warna pada nama pengguna
+            Text(
+                userProfile.name,
                 fontSize = 20.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 userProfile.job,
                 fontSize = 14.sp,
-                color = Color.DarkGray
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 userProfile.tagline,
                 fontSize = 12.sp,
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 2
             )
             Text(
                 text = userProfile.bio,
                 fontSize = 12.sp,
-                color = Color.Gray,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 3
             )
-
-            Row (
+            Spacer(modifier = Modifier.height(8.dp)) // Menambahkan spasi sebelum ikon
+            Row(
                 verticalAlignment = Alignment.CenterVertically
-            ){
-                Text(
-                    text = "3 following",
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 14.sp
-                )
-                Spacer(modifier = Modifier.width(16.dp))
+            ) {
+                val instagramUrl = userProfile.socialMediaLinks["instagram"]
+                if (instagramUrl?.isNotBlank() == true) {
+                    Image(
+                        painter = painterResource(R.drawable.instagram),
+                        contentDescription = "Instagram",
+                        // 2. Tambahkan ColorFilter untuk memberi warna pada ikon
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant),
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clickable {
+                                val intent = Intent(Intent.ACTION_VIEW, instagramUrl.toUri())
+                                context.startActivity(intent)
+                            }
+                    )
+                }
+                Spacer(modifier = Modifier.width(12.dp))
 
-                Text(
-                    text = "1.3k Followers",
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 14.sp
-                )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Row (
-                verticalAlignment = Alignment.CenterVertically
-            ){
-                Image(
-                    painter = painterResource(R.drawable.instagram),
-                    contentDescription = "Instagram",
-                    modifier = Modifier.size(24.dp)
-                )
+                val githubUrl = userProfile.socialMediaLinks["github"]
+                if (githubUrl?.isNotBlank() == true) {
+                    Image(
+                        painter = painterResource(R.drawable.facebook), // Ganti dengan drawable yang benar
+                        contentDescription = "github",
+                        // 2. Tambahkan ColorFilter untuk memberi warna pada ikon
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant),
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clickable {
+                                val intent = Intent(Intent.ACTION_VIEW, githubUrl.toUri())
+                                context.startActivity(intent)
+                            },
+                    )
+                }
                 Spacer(modifier = Modifier.width(12.dp))
-                Image(
-                    painter = painterResource(R.drawable.facebook),
-                    contentDescription = "Facebook",
-                    modifier = Modifier.size(24.dp),
-                )
-                Spacer(modifier = Modifier.width(12.dp))
-                Image(
-                    painter = painterResource(R.drawable.youtube),
-                    contentDescription = "Youtube",
-                    modifier = Modifier.size(24.dp)
-                )
+
+                val linkedinUrl = userProfile.socialMediaLinks["linkedin"]
+                if (linkedinUrl?.isNotBlank() == true) {
+                    Image(
+                        painter = painterResource(R.drawable.youtube), // Ganti dengan drawable yang benar
+                        contentDescription = "Linkedin",
+                        // 2. Tambahkan ColorFilter untuk memberi warna pada ikon
+                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant),
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clickable {
+                                val intent = Intent(Intent.ACTION_VIEW, linkedinUrl.toUri())
+                                context.startActivity(intent)
+                            }
+                    )
+                }
             }
         }
     }

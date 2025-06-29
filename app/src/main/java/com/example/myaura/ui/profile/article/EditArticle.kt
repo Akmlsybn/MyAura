@@ -1,7 +1,11 @@
 package com.example.myaura.ui.profile.article
 
+import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -10,13 +14,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.myaura.R
 
 @Composable
@@ -26,6 +32,14 @@ fun EditArticle(
 ) {
     val editState by viewModel.editState.collectAsState()
     val context = LocalContext.current
+
+    var newImageUri by remember { mutableStateOf<Uri?>(null) }
+
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        newImageUri = uri
+    }
 
     LaunchedEffect(key1 = editState.isSuccess) {
         if (editState.isSuccess) {
@@ -42,7 +56,8 @@ fun EditArticle(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF1F5F9))
+            // 1. Ganti warna background hardcode dengan warna dari tema
+            .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 24.dp, vertical = 32.dp)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -51,10 +66,35 @@ fun EditArticle(
             CircularProgressIndicator()
         } else {
             Box(
-                modifier = Modifier.fillMaxWidth().height(200.dp).background(Color(0xFFE2E8F0), RoundedCornerShape(8.dp)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    // 2. Ganti warna background box dengan warna dari tema
+                    .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(8.dp))
+                    .clickable { imagePickerLauncher.launch("image/*") },
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "+ Tambah Gambar Sampul", textAlign = TextAlign.Center, color = Color.DarkGray)
+                val imageUrlToDisplay = remember(editState.imageUrl, newImageUri) {
+                    newImageUri?.toString() ?: editState.imageUrl
+                }
+
+                if (imageUrlToDisplay.isNotBlank()) {
+                    AsyncImage(
+                        model = imageUrlToDisplay,
+                        contentDescription = "Cover Image",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop,
+                        placeholder = painterResource(id = R.drawable.ic_launcher_background),
+                        error = painterResource(id = R.drawable.ic_launcher_background)
+                    )
+                } else {
+                    Text(
+                        text = "+ Ubah Gambar Sampul",
+                        textAlign = TextAlign.Center,
+                        // 3. Ganti warna teks dengan warna dari tema
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -67,16 +107,22 @@ fun EditArticle(
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = { viewModel.onUpdateClicked() },
-                modifier = Modifier.fillMaxWidth().height(48.dp),
+                onClick = { viewModel.onUpdateClicked(newImageUri) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
                 enabled = !editState.isLoading,
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0D1B66)),
+                // 4. Ganti warna tombol dengan warna dari tema
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                ),
                 shape = RoundedCornerShape(24.dp)
             ) {
                 if (editState.isLoading) {
-                    CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White)
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
                 } else {
-                    Text(stringResource(R.string.SaveEdit), color = Color.White)
+                    Text(stringResource(R.string.SaveEdit))
                 }
             }
         }

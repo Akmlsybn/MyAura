@@ -4,6 +4,7 @@ import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -60,12 +61,18 @@ fun EditProfileScreen(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(24.dp).verticalScroll(rememberScrollState()),
+        modifier = Modifier
+            .fillMaxSize()
+            // **PERBAIKAN:** Menggunakan warna background dari tema
+            .background(MaterialTheme.colorScheme.background)
+            .padding(24.dp)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (editState.isLoading && editState.name.isBlank()) {
             CircularProgressIndicator()
         } else {
+            // Box untuk gambar profil yang bisa diklik
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier.clickable { imagePickerLauncher.launch("image/*") }
@@ -79,7 +86,8 @@ fun EditProfileScreen(
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
-            Text("Edit Photo")
+            // **PERBAIKAN:** Menggunakan warna onBackground dari tema
+            Text("Edit Photo", color = MaterialTheme.colorScheme.onBackground)
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -102,12 +110,18 @@ fun EditProfileScreen(
                 modifier = Modifier.fillMaxWidth().height(50.dp),
                 enabled = !editState.isLoading,
                 shape = RoundedCornerShape(50),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF141E61))
+                // **PERBAIKAN:** Menggunakan warna primary dari tema
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary // Menggunakan onPrimary untuk teks/ikon
+                )
             ) {
                 if (editState.isLoading) {
-                    CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White)
+                    // **PERBAIKAN:** Menggunakan warna onPrimary dari tema
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
                 } else {
-                    Text(stringResource(R.string.Save), fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                    // **PERBAIKAN:** Menghapus color dari Text karena sudah diatur di ButtonDefaults
+                    Text(stringResource(R.string.Save), fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 }
             }
         }

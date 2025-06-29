@@ -2,28 +2,21 @@ package com.example.myaura.ui.onboarding
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -35,14 +28,17 @@ import com.example.myaura.R
 import kotlinx.coroutines.launch
 
 @Composable
-fun OnboardingScreen(navController: NavController){
-    val pagerState = rememberPagerState ( pageCount = { onboardingPages.size} )
+fun OnboardingScreen(navController: NavController) {
+    val pagerState = rememberPagerState(pageCount = { onboardingPages.size })
     val scope = rememberCoroutineScope()
 
-    Column (
-        modifier = Modifier.fillMaxSize().padding(24.dp),
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
+    ) {
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.weight(1f)
@@ -50,12 +46,12 @@ fun OnboardingScreen(navController: NavController){
             val page = onboardingPages[pageIndex]
             OnboardingPageContent(page = page)
         }
-        Row (
+        Row(
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier.padding(vertical = 24.dp)
-        ){
-            repeat(pagerState.pageCount) {iteration ->
-                val color = if (pagerState.currentPage == iteration) Color(0xFF141E61) else Color.LightGray
+        ) {
+            repeat(pagerState.pageCount) { iteration ->
+                val color = if (pagerState.currentPage == iteration) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant
                 Box(
                     modifier = Modifier
                         .padding(4.dp)
@@ -65,38 +61,46 @@ fun OnboardingScreen(navController: NavController){
                 )
             }
         }
-        Button (
+        Button(
             onClick = {
                 scope.launch {
                     if (pagerState.currentPage < pagerState.pageCount - 1) {
                         pagerState.animateScrollToPage(pagerState.currentPage + 1)
                     } else {
-                        navController.navigate("signing"){
-                            popUpTo("onboarding") { inclusive = true}
+                        navController.navigate("signing") {
+                            popUpTo("onboarding") { inclusive = true }
                         }
                     }
                 }
             },
-            modifier = Modifier.fillMaxWidth().height(48.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF141E61))
-        ){
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(48.dp),
+            // Warna tombol sekarang mengikuti tema
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            )
+        ) {
             val buttonText = if (pagerState.currentPage < pagerState.pageCount - 1) {
                 stringResource(id = R.string.next)
             } else {
-                "Selesai" //ini nanti dirubah ke string jangan lupa
+                "Selesai" // Anda bisa memindahkan ini ke strings.xml
             }
-            Text(text = buttonText, color = Color.White)
+            Text(text = buttonText)
         }
     }
 }
 
 @Composable
 fun OnboardingPageContent(page: OnboardingPage) {
-    Column (
-        modifier = Modifier.fillMaxHeight(),
+    Column(
+        modifier = Modifier
+            .fillMaxHeight()
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ){
+        verticalArrangement = Arrangement.Center,
+    ) {
         Image(
             painter = painterResource(id = page.image),
             contentDescription = null,
@@ -104,17 +108,20 @@ fun OnboardingPageContent(page: OnboardingPage) {
                 .fillMaxWidth()
                 .height(250.dp)
         )
+        Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = stringResource(id = page.title),
-            color = Color(0xFF141E61),
+            color = MaterialTheme.colorScheme.primary,
             fontSize = 20.sp,
             fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.Center
         )
+        Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = stringResource(id = page.description),
             fontSize = 16.sp,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onSurface
         )
     }
 }

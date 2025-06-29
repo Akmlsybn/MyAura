@@ -3,6 +3,7 @@ package com.example.myaura.ui.login
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -14,7 +15,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -31,6 +31,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.myaura.R
+import com.example.myaura.ui.theme.MyAuraTheme
 
 @Composable
 fun SignUp(
@@ -47,18 +48,18 @@ fun SignUp(
 
     LaunchedEffect(signUpState) {
         if (signUpState.isSuccess) {
-            navController.navigate("profile_page") { popUpTo(0)
-            }
-            signUpState.error?.let { errorMessage ->
-                Log.e("SignUpScreen", "Firebase Error: $errorMessage")
-                Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
-            }
+            navController.navigate("profile_page") { popUpTo(0) }
+        }
+        signUpState.error?.let { errorMessage ->
+            Log.e("SignUpScreen", "Firebase Error: $errorMessage")
+            Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
         }
     }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background) // Gunakan warna background dari tema
             .padding(24.dp)
             .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -69,14 +70,14 @@ fun SignUp(
         Text(
             text = stringResource(R.string.app_name),
             fontSize = 36.sp,
-            color = Color(0xFF0D1B4C),
+            color = MaterialTheme.colorScheme.primary, // Gunakan warna primary dari tema
             modifier = Modifier.align(Alignment.Start)
         )
         Spacer(modifier = Modifier.height(12.dp))
 
         Column(horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxWidth()) {
-            Text(text = stringResource(R.string.SignUp), fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
-            Text(text = stringResource(R.string.SignUp_2), fontSize = 14.sp, color = Color.Black, fontWeight = FontWeight.Normal)
+            Text(text = stringResource(R.string.SignUp), color = MaterialTheme.colorScheme.onBackground, fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
+            Text(text = stringResource(R.string.SignUp_2), fontSize = 14.sp, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Normal)
         }
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -117,20 +118,20 @@ fun SignUp(
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { viewModel.onSignUpClicked(email, password)},
+            onClick = { viewModel.onSignUpClicked(email, password) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF141E61),
-                contentColor = Color.White
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
             )
         ) {
             Text(stringResource(R.string.SignUp), fontWeight = FontWeight.SemiBold)
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-        Text(stringResource(R.string.Or), color = Color.Black)
+        Text(stringResource(R.string.Or), color = MaterialTheme.colorScheme.onBackground)
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedButton(
@@ -145,13 +146,13 @@ fun SignUp(
                 modifier = Modifier.size(20.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(stringResource(R.string.Google), color = Color.Black)
+            Text(stringResource(R.string.Google), color = MaterialTheme.colorScheme.onBackground)
         }
 
         TextButton(
-            onClick = { navController.navigate("signing") } // Pindah ke halaman SignIn
+            onClick = { navController.navigate("signing") }
         ) {
-            Text(stringResource(R.string.SignIn_2), color = Color.Black)
+            Text(stringResource(R.string.SignIn_2), color = MaterialTheme.colorScheme.onBackground)
         }
     }
 }
@@ -159,6 +160,8 @@ fun SignUp(
 @Preview(showBackground = true)
 @Composable
 fun SignUpPreview() {
-    val navController = rememberNavController()
-    SignUp(navController = navController)
+    MyAuraTheme {
+        val navController = rememberNavController()
+        SignUp(navController = navController)
+    }
 }

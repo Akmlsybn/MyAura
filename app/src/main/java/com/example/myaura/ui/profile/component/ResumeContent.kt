@@ -1,5 +1,6 @@
 package com.example.myaura.ui.profile.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -8,20 +9,18 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import com.example.myaura.R
 import com.example.myaura.domain.model.PortfolioItem
 import com.example.myaura.ui.profile.ProfileState
 import com.example.myaura.ui.profile.ProfileViewModel
@@ -33,9 +32,11 @@ fun ResumeContent(
 ) {
     val profileState by viewModel.profileState.collectAsState()
 
+    // State untuk mengontrol dialog konfirmasi
     var showDeleteDialog by remember { mutableStateOf(false) }
     var portfolioToDelete by remember { mutableStateOf<PortfolioItem?>(null) }
 
+    // Tampilkan AlertDialog jika showDeleteDialog adalah true
     if (showDeleteDialog && portfolioToDelete != null) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
@@ -44,6 +45,7 @@ fun ResumeContent(
             confirmButton = {
                 Button(
                     onClick = {
+                        // Hanya hapus jika pengguna menekan "Hapus"
                         portfolioToDelete?.id?.let { viewModel.deletePortfolio(it) }
                         showDeleteDialog = false
                     },
@@ -73,10 +75,15 @@ fun ResumeContent(
             Text(
                 text = "Add Portfolio",
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 16.sp
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onBackground // Warna teks sesuai tema
             )
             IconButton(onClick = { navController.navigate("add_portfolio") }) {
-                Icon(Icons.Default.Add, contentDescription = "Add Portfolio")
+                Icon(
+                    Icons.Default.Add,
+                    contentDescription = "Add Portfolio",
+                    tint = MaterialTheme.colorScheme.primary // Warna ikon sesuai tema
+                )
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
@@ -84,13 +91,21 @@ fun ResumeContent(
         when (val state = profileState) {
             is ProfileState.Success -> {
                 if (state.portfolios.isEmpty()) {
-                    Text("Anda belum menambahkan portofolio.", modifier = Modifier.padding(vertical = 16.dp))
+                    Text(
+                        "Anda belum menambahkan portofolio.",
+                        modifier = Modifier.padding(vertical = 16.dp),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 } else {
-                    LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                         items(state.portfolios, key = { it.id }) { portfolioItem ->
                             PortfolioCard(
                                 item = portfolioItem,
+                                modifier = Modifier.clickable {
+                                    navController.navigate("portfolio_detail/${portfolioItem.id}")
+                                },
                                 onDelete = {
+                                    // **PERBAIKAN:** Panggil state update untuk menampilkan dialog
                                     portfolioToDelete = portfolioItem
                                     showDeleteDialog = true
                                 },
@@ -102,33 +117,81 @@ fun ResumeContent(
                     }
                 }
             }
-            else -> {
+            is ProfileState.Loading -> {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
             }
+            else -> {}
         }
     }
 }
 
 @Composable
-fun PortfolioCard(item: PortfolioItem, onDelete: () -> Unit, onEdit: () -> Unit) {
+fun PortfolioCard(
+    modifier: Modifier = Modifier,
+    item: PortfolioItem,
+    onDelete: () -> Unit,
+    onEdit: () -> Unit) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        modifier = modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest)
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = item.title, style = MaterialTheme.typography.titleMedium)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(text = item.dateRange, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = item.description, style = MaterialTheme.typography.bodyMedium)
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(text = "Skill: ${item.skill}", style = MaterialTheme.typography.bodySmall)
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                IconButton(onClick = onEdit) {
-                    Icon(Icons.Default.Edit, contentDescription = "Edit Portfolio")
-                }
-                IconButton(onClick = onDelete) {
-                    Icon(Icons.Default.Delete, contentDescription = "Delete Portfolio")
+        Column {
+            if (item.imageUrl.isNotBlank()) {
+                AsyncImage(
+                    model = item.imageUrl,
+                    contentDescription = "Portfolio Image",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(150.dp),
+                    contentScale = ContentScale.Crop,
+                    placeholder = painterResource(id = R.drawable.ic_launcher_background),
+                    error = painterResource(id = R.drawable.ic_launcher_background)
+                )
+            }
+
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = item.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = item.dateRange,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = item.description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "Skill: ${item.skill}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                    IconButton(onClick = onEdit) {
+                        Icon(
+                            Icons.Default.Edit,
+                            contentDescription = "Edit Portfolio",
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    IconButton(onClick = onDelete) {
+                        Icon(
+                            Icons.Default.Delete,
+                            contentDescription = "Delete Portfolio",
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                    }
                 }
             }
         }

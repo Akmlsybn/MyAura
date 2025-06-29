@@ -1,6 +1,9 @@
 package com.example.myaura.ui.profile.portfolio
 
+import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -12,13 +15,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.myaura.R
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -33,8 +38,17 @@ fun EditPortfolio(
     val editState by viewModel.editState.collectAsState()
     val context = LocalContext.current
 
+    var newImageUri by remember { mutableStateOf<Uri?>(null) }
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        newImageUri = uri
+    }
+
     var showDatePicker by remember { mutableStateOf(false) }
+    // Di sini kita harus mendefinisikan datePickerTarget lagi karena scope-nya lokal
     var datePickerTarget by remember { mutableStateOf<DatePickerTarget?>(null) }
+
 
     LaunchedEffect(key1 = editState.isSuccess) {
         if (editState.isSuccess) {
@@ -53,19 +67,25 @@ fun EditPortfolio(
         DatePickerDialog(
             onDismissRequest = { showDatePicker = false },
             confirmButton = {
-                Button(onClick = {
-                    datePickerState.selectedDateMillis?.let { millis ->
-                        val formattedDate = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date(millis))
-                        if (datePickerTarget == DatePickerTarget.START) {
-                            viewModel.onStartDateSelected(formattedDate)
-                        } else {
-                            viewModel.onEndDateSelected(formattedDate)
+                Button(
+                    onClick = {
+                        datePickerState.selectedDateMillis?.let { millis ->
+                            val formattedDate = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date(millis))
+                            if (datePickerTarget == DatePickerTarget.START) {
+                                viewModel.onStartDateSelected(formattedDate)
+                            } else {
+                                viewModel.onEndDateSelected(formattedDate)
+                            }
                         }
-                    }
-                    showDatePicker = false
-                }) { Text("OK") }
+                        showDatePicker = false
+                    },
+                    // Menggunakan warna tema
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                ) { Text("OK") }
             },
-            dismissButton = { Button(onClick = { showDatePicker = false }) { Text("Batal") } }
+            dismissButton = {
+                Button(onClick = { showDatePicker = false }) { Text("Batal") }
+            }
         ) {
             DatePicker(state = datePickerState)
         }
@@ -74,7 +94,8 @@ fun EditPortfolio(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF1F5F9))
+            // 1. Ganti warna latar belakang
+            .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 24.dp, vertical = 32.dp)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -82,40 +103,61 @@ fun EditPortfolio(
         if (editState.isLoading && editState.title.isBlank()) {
             CircularProgressIndicator()
         } else {
-            // ... (UI untuk Box gambar tidak berubah)
             Box(
-                modifier = Modifier.fillMaxWidth().height(200.dp).background(Color(0xFFE2E8F0), RoundedCornerShape(8.dp)),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    // 2. Ganti warna background box
+                    .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(8.dp))
+                    .clickable { imagePickerLauncher.launch("image/*") },
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = stringResource(R.string.Add_Box), textAlign = TextAlign.Center, color = Color.DarkGray)
+                val imageUrlToDisplay = remember(editState.imageUrl, newImageUri) {
+                    newImageUri ?: editState.imageUrl
+                }
+
+                if (imageUrlToDisplay.toString().isNotBlank()) {
+                    AsyncImage(
+                        model = imageUrlToDisplay,
+                        contentDescription = "Portfolio Image",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop,
+                        placeholder = painterResource(id = R.drawable.ic_launcher_background),
+                        error = painterResource(id = R.drawable.ic_launcher_background)
+                    )
+                } else {
+                    Text(
+                        text = stringResource(R.string.Add_Box),
+                        textAlign = TextAlign.Center,
+                        // 3. Ganti warna teks
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(value = editState.title, onValueChange = { viewModel.onTitleChange(it) }, label = { Text("Judul Portofolio") }, modifier = Modifier.fillMaxWidth())
+            Spacer(modifier = Modifier.height(8.dp))
 
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .border(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f), RoundedCornerShape(4.dp))
+                        .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(4.dp))
                         .clickable {
                             datePickerTarget = DatePickerTarget.START
                             showDatePicker = true
                         }
                         .padding(16.dp)
                 ) {
-                    Text(text = editState.startDate)
+                    Text(text = editState.startDate, color = MaterialTheme.colorScheme.onSurface)
                 }
 
                 val isEndDateEnabled = !editState.isCurrent
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .border(
-                            1.dp,
-                            MaterialTheme.colorScheme.onSurface.copy(alpha = if (isEndDateEnabled) 0.4f else 0.1f),
-                            RoundedCornerShape(4.dp)
-                        )
+                        .border(1.dp, MaterialTheme.colorScheme.outline.copy(alpha = if (isEndDateEnabled) 1f else 0.4f), RoundedCornerShape(4.dp))
                         .clickable(enabled = isEndDateEnabled) {
                             datePickerTarget = DatePickerTarget.END
                             showDatePicker = true
@@ -128,14 +170,18 @@ fun EditPortfolio(
                     )
                 }
             }
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Checkbox(
                     checked = editState.isCurrent,
-                    onCheckedChange = { viewModel.onIsCurrentChange(it) }
+                    onCheckedChange = { viewModel.onIsCurrentChange(it) },
+                    colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary)
                 )
-                Text("Sekarang")
+                Text("Sekarang", color = MaterialTheme.colorScheme.onSurface)
             }
-            // ------------------------------------
+            Spacer(modifier = Modifier.height(8.dp))
 
             OutlinedTextField(value = editState.skill, onValueChange = { viewModel.onSkillChange(it) }, label = { Text(stringResource(R.string.skill)) }, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(value = editState.projectUrl, onValueChange = { viewModel.onUrlChange(it) }, label = { Text(stringResource(R.string.url)) }, modifier = Modifier.fillMaxWidth())
@@ -144,16 +190,22 @@ fun EditPortfolio(
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = { viewModel.onUpdateClicked() },
-                modifier = Modifier.fillMaxWidth().height(48.dp),
+                onClick = { viewModel.onUpdateClicked(newImageUri) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(48.dp),
                 enabled = !editState.isLoading,
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0D1B66)),
+                // 4. Ganti warna tombol agar sesuai tema
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                ),
                 shape = RoundedCornerShape(24.dp)
             ) {
                 if (editState.isLoading) {
-                    CircularProgressIndicator(modifier = Modifier.size(24.dp), color = Color.White)
+                    CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
                 } else {
-                    Text(stringResource(R.string.SaveEdit), color = Color.White)
+                    Text(stringResource(R.string.SaveEdit))
                 }
             }
         }

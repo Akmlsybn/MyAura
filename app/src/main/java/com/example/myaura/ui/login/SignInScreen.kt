@@ -2,6 +2,7 @@ package com.example.myaura.ui.login
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -13,7 +14,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.KeyboardType
@@ -30,6 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.myaura.ui.theme.MyAuraTheme
 
 @Composable
 fun SignIn(
@@ -41,7 +42,7 @@ fun SignIn(
     val signInState by viewModel.signInState.collectAsState()
     val context = LocalContext.current
 
-    val scrollState= rememberScrollState()
+    val scrollState = rememberScrollState()
 
     LaunchedEffect(key1 = signInState) {
         if (signInState.isSuccess) {
@@ -55,6 +56,7 @@ fun SignIn(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background) // Gunakan warna background dari tema
             .padding(24.dp)
             .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -65,14 +67,14 @@ fun SignIn(
         Text(
             text = stringResource(R.string.app_name),
             fontSize = 36.sp,
-            color = Color(0xFF141E61),
+            color = MaterialTheme.colorScheme.primary, // Gunakan warna primary dari tema
             modifier = Modifier.align(Alignment.Start)
         )
         Spacer(modifier = Modifier.height(12.dp))
 
         Column(horizontalAlignment = Alignment.Start, modifier = Modifier.fillMaxWidth()) {
-            Text(text = stringResource(R.string.SignIn), fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
-            Text(text = stringResource(R.string.Welcome_sign), fontSize = 14.sp, color = Color.Black, fontWeight = FontWeight.Normal)
+            Text(text = stringResource(R.string.SignIn), color = MaterialTheme.colorScheme.onBackground, fontSize = 24.sp, fontWeight = FontWeight.SemiBold)
+            Text(text = stringResource(R.string.Welcome_sign), fontSize = 14.sp, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Normal)
         }
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
@@ -97,21 +99,21 @@ fun SignIn(
             visualTransformation = PasswordVisualTransformation()
         )
         Button(
-            onClick = { viewModel.onSignInClicked(email, password)},
+            onClick = { viewModel.onSignInClicked(email, password) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
             enabled = !signInState.isLoading,
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF141E61),
-                contentColor = Color.White
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
             )
         ) {
             Text(stringResource(R.string.SignIn), fontWeight = FontWeight.SemiBold)
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-        Text(stringResource(R.string.Or), color = Color.Black)
+        Text(stringResource(R.string.Or), color = MaterialTheme.colorScheme.onBackground)
         Spacer(modifier = Modifier.height(16.dp))
         OutlinedButton(
             onClick = {},
@@ -125,12 +127,12 @@ fun SignIn(
                 modifier = Modifier.size(20.dp)
             )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(stringResource(R.string.Google), color = Color.Black)
+            Text(stringResource(R.string.Google), color = MaterialTheme.colorScheme.onSurface)
         }
         TextButton(
-            onClick = { navController.navigate("signup") }  // Navigasi ke halaman Sign Up
+            onClick = { navController.navigate("signup") }
         ) {
-            Text(stringResource(R.string.SignUp_3), color = Color.Black)
+            Text(stringResource(R.string.SignUp_3), color = MaterialTheme.colorScheme.onBackground)
         }
     }
 }
@@ -138,6 +140,8 @@ fun SignIn(
 @Preview(showBackground = true)
 @Composable
 fun SignInPreview() {
-    val navController = rememberNavController()
-    SignIn(navController = navController)
+    MyAuraTheme {
+        val navController = rememberNavController()
+        SignIn(navController = navController)
+    }
 }

@@ -5,6 +5,8 @@ import com.example.myaura.domain.model.PortfolioItem
 import com.example.myaura.domain.model.UserProfile
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.Source
+
 import kotlinx.coroutines.tasks.await
 
 class ProfileRemoteDataSource (private val firestore: FirebaseFirestore) {
@@ -13,7 +15,7 @@ class ProfileRemoteDataSource (private val firestore: FirebaseFirestore) {
     }
 
     suspend fun getUserProfile(uid: String): UserProfile? {
-        return firestore.collection("users").document(uid).get().await()
+        return firestore.collection("users").document(uid).get(Source.SERVER).await()
             .toObject(UserProfile::class.java)
     }
 
@@ -28,7 +30,7 @@ class ProfileRemoteDataSource (private val firestore: FirebaseFirestore) {
         return firestore.collection("users").document(userId)
             .collection("portfolios")
             .orderBy("createdAt", Query.Direction.DESCENDING)
-            .get().await().toObjects(PortfolioItem::class.java)
+            .get(Source.SERVER).await().toObjects(PortfolioItem::class.java)
     }
 
     suspend fun deletePortfolio(userId: String, portfolioId: String) {
@@ -39,7 +41,7 @@ class ProfileRemoteDataSource (private val firestore: FirebaseFirestore) {
     suspend fun getPortfolio(userId: String, portfolioId: String): PortfolioItem? {
         return firestore.collection("users").document(userId)
             .collection("portfolios").document(portfolioId)
-            .get().await().toObject(PortfolioItem::class.java)
+            .get(Source.SERVER).await().toObject(PortfolioItem::class.java)
     }
 
     suspend fun updatePortfolio(userId: String, portfolioItem: PortfolioItem) {
@@ -59,13 +61,13 @@ class ProfileRemoteDataSource (private val firestore: FirebaseFirestore) {
         return firestore.collection("users").document(userId)
             .collection("articles")
             .orderBy("createdAt", Query.Direction.DESCENDING)
-            .get().await().toObjects(Article::class.java)
+            .get(Source.SERVER).await().toObjects(Article::class.java)
     }
 
     suspend fun getArticle(userId: String, articleId: String): Article? {
         return firestore.collection("users").document(userId)
             .collection("articles").document(articleId)
-            .get().await().toObject(Article::class.java)
+            .get(Source.SERVER).await().toObject(Article::class.java)
     }
 
     suspend fun updateArticle(userId: String, article: Article) {
@@ -77,5 +79,17 @@ class ProfileRemoteDataSource (private val firestore: FirebaseFirestore) {
     suspend fun deleteArticle(userId: String, articleId: String) {
         firestore.collection("users").document(userId)
             .collection("articles").document(articleId).delete().await()
+    }
+
+    suspend fun getAllArticles(): List<Article> {
+        val articleRefs = firestore.collection("users").get().await().documents
+            .map { it.reference.collection("articles") }
+
+        val allArticles = mutableListOf<Article>()
+        for (ref in articleRefs) {
+            val articles = ref.orderBy("createdAt", Query.Direction.DESCENDING).get(Source.SERVER).await().toObjects(Article::class.java)
+            allArticles.addAll(articles)
+        }
+        return allArticles
     }
 }

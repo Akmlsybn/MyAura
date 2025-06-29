@@ -25,7 +25,7 @@ class EditProfileViewModel @Inject constructor(
     private val getUserProfileUseCase: GetUserProfileUseCase,
     private val imgurApiService: ImgurApiService,
     private val auth: FirebaseAuth,
-    @ApplicationContext private val context: Context 
+    @ApplicationContext private val context: Context
 ) : ViewModel() {
 
     private val _editState = MutableStateFlow(EditProfileState())
@@ -69,7 +69,8 @@ class EditProfileViewModel @Inject constructor(
     fun onGithubChange(url: String) { _editState.value = _editState.value.copy(github = url) }
     fun onLinkedinChange(url: String) { _editState.value = _editState.value.copy(linkedin = url) }
 
-    fun onSaveClicked(newImageUri: Uri?) {
+    fun onSaveClicked(newImageUri: Uri?)
+    {
         viewModelScope.launch {
             _editState.value = _editState.value.copy(isLoading = true)
             val currentUserUid = auth.currentUser?.uid ?: return@launch
@@ -118,6 +119,7 @@ class EditProfileViewModel @Inject constructor(
                     .onFailure { _editState.value = _editState.value.copy(error = it.message, isLoading = false) }
 
             } catch (e: Exception) {
+                android.util.Log.e("ImgurUploadError", "Error during image upload: ${e.message}", e)
                 _editState.value = _editState.value.copy(error = e.message ?: "Terjadi kesalahan", isLoading = false)
             }
         }

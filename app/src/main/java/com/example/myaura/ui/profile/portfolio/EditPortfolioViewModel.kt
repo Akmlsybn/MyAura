@@ -1,28 +1,39 @@
 package com.example.myaura.ui.profile.portfolio
 
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myaura.data.remote.ImgurApiService
 import com.example.myaura.domain.model.PortfolioItem
 import com.example.myaura.domain.usecase.GetPortfolioUseCase
 import com.example.myaura.domain.usecase.UpdatePortfolioUseCase
 import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
 
 @HiltViewModel
 class EditPortfolioViewModel @Inject constructor(
     private val getPortfolioUseCase: GetPortfolioUseCase,
     private val updatePortfolioUseCase: UpdatePortfolioUseCase,
     private val auth: FirebaseAuth,
+    private val imgurApiService: ImgurApiService,
+    @ApplicationContext private val context: Context,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _editState = MutableStateFlow(EditPortfolioState())
     val editState = _editState.asStateFlow()
+
 
     private val portfolioId: String = savedStateHandle.get<String>("portfolioId")!!
 
@@ -45,7 +56,8 @@ class EditPortfolioViewModel @Inject constructor(
                             endDate = portfolioItem.dateRange.split(" - ").getOrElse(1){ "" },
                             isCurrent = portfolioItem.dateRange.contains("Saat Ini"),
                             skill = portfolioItem.skill,
-                            projectUrl = portfolioItem.projectUrl
+                            projectUrl = portfolioItem.projectUrl,
+                            imageUrl = portfolioItem.imageUrl
                         )
                     } else {
                         _editState.value = _editState.value.copy(isLoading = false, error = "Portofolio tidak ditemukan.")
@@ -67,32 +79,62 @@ class EditPortfolioViewModel @Inject constructor(
     fun onIsCurrentChange(isCurrent: Boolean) { _editState.value = _editState.value.copy(isCurrent = isCurrent) }
 
 
-    fun onUpdateClicked() {
+    fun onUpdateClicked(newImageUri: Uri?) {
         viewModelScope.launch {
             _editState.value = _editState.value.copy(isLoading = true)
             val uid = auth.currentUser?.uid ?: return@launch
 
-            val currentState = _editState.value
-            val finalEndDate = if (currentState.isCurrent) "Sekarang" else currentState.endDate
-            val dateRange = "${currentState.startDate} - $finalEndDate"
+            try {
+                val finalImageUrl = if (newImageUri != null) {
+                    val inputStream = context.contentResolver.openInputStream(newImageUri)
+                    val imageBytes = inputStream?.readBytes()
+                    inputStream?.close()
 
-            val updatedPortfolio = PortfolioItem(
-                id = portfolioId,
-                userId = uid,
-                title = currentState.title,
-                description = currentState.description,
-                dateRange = dateRange,
-                skill = currentState.skill,
-                projectUrl = currentState.projectUrl
-            )
+                    if (imageBytes != null) {
+                        val mimeType = context.contentResolver.getType(newImageUri)
+                        val requestBody = imageBytes.toRequestBody(mimeType?.toMediaTypeOrNull() ?: "image/*".toMediaTypeOrNull())
+                        val imagePart = MultipartBody.Part.createFormData("image", "portfolio_image.jpg", requestBody)
+                        val response = imgurApiService.uploadImage("Client-ID 6933ca201b18ccf", imagePart)
+                        if (response.success) {
+                            response.data.link
+                        } else {
+                            _editState.value = _editState.value.copy(error = "Gagal mengupload gambar sampul.", isLoading = false)
+                            return@launch
+                        }
+                    } else {
+                        _editState.value.imageUrl
+                    }
+                } else {
+                    _editState.value.imageUrl
+                }
 
-            updatePortfolioUseCase(uid, updatedPortfolio)
-                .onSuccess {
-                    _editState.value = _editState.value.copy(isSuccess = true, isLoading = false)
-                }
-                .onFailure {
-                    _editState.value = _editState.value.copy(error = it.message, isLoading = false)
-                }
+                val currentState = _editState.value
+                val finalEndDate = if (currentState.isCurrent) "Sekarang" else currentState.endDate
+                val dateRange = "${currentState.startDate} - $finalEndDate"
+
+                val updatedPortfolio = PortfolioItem(
+                    id = portfolioId,
+                    userId = uid,
+                    title = currentState.title,
+                    description = currentState.description,
+                    dateRange = dateRange,
+                    skill = currentState.skill,
+                    projectUrl = currentState.projectUrl,
+                    imageUrl = finalImageUrl
+                )
+
+                updatePortfolioUseCase(uid, updatedPortfolio)
+                    .onSuccess {
+                        _editState.value = _editState.value.copy(isSuccess = true, isLoading = false)
+                    }
+                    .onFailure {
+                        _editState.value = _editState.value.copy(error = it.message, isLoading = false)
+                    }
+            } catch (e: IOException) {
+                _editState.value = _editState.value.copy(error = "Gagal unggah: Periksa koneksi internet.", isLoading = false)
+            } catch (e: Exception) {
+                _editState.value = _editState.value.copy(error = e.message ?: "Terjadi kesalahan.", isLoading = false)
+            }
         }
     }
 
@@ -106,6 +148,7 @@ data class EditPortfolioState(
     val description: String = "",
     val startDate: String = "Tanggal Mulai",
     val endDate: String = "Tanggal Selesai",
+    val imageUrl: String = "",
     val isCurrent: Boolean = false,
     val skill: String = "",
     val projectUrl: String = "",
