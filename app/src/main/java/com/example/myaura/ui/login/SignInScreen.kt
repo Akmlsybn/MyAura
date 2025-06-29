@@ -56,7 +56,7 @@ fun SignIn(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+            .background(MaterialTheme.colorScheme.background) // Gunakan warna background dari tema
             .padding(24.dp)
             .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -67,7 +67,7 @@ fun SignIn(
         Text(
             text = stringResource(R.string.app_name),
             fontSize = 36.sp,
-            color = MaterialTheme.colorScheme.primary,
+            color = MaterialTheme.colorScheme.primary, // Gunakan warna primary dari tema
             modifier = Modifier.align(Alignment.Start)
         )
         Spacer(modifier = Modifier.height(12.dp))
@@ -98,6 +98,7 @@ fun SignIn(
             singleLine = true,
             visualTransformation = PasswordVisualTransformation()
         )
+        Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = { viewModel.onSignInClicked(email, password) },
             modifier = Modifier
@@ -112,25 +113,9 @@ fun SignIn(
             Text(stringResource(R.string.SignIn), fontWeight = FontWeight.SemiBold)
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(stringResource(R.string.Or), color = MaterialTheme.colorScheme.onBackground)
-        Spacer(modifier = Modifier.height(16.dp))
-        OutlinedButton(
-            onClick = {},
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(48.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.google),
-                contentDescription = "Google Icon",
-                modifier = Modifier.size(20.dp)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(stringResource(R.string.Google), color = MaterialTheme.colorScheme.onSurface)
-        }
         TextButton(
-            onClick = { navController.navigate("signup") }
+            onClick = { navController.navigate("signup") },
+            modifier = Modifier.padding(top = 8.dp)
         ) {
             Text(stringResource(R.string.SignUp_3), color = MaterialTheme.colorScheme.onBackground)
         }

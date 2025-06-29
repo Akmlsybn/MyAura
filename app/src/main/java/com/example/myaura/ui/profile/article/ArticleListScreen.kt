@@ -4,14 +4,17 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -26,6 +29,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Button
+import androidx.compose.runtime.remember
+import com.example.myaura.domain.model.UserProfile
+import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,10 +74,11 @@ fun ArticleListScreen(
                             contentPadding = PaddingValues(top = 16.dp, start = 16.dp, end = 16.dp),
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
-                            items(state.articles, key = { it.id }) { article ->
+                            items(state.articles, key = { it.article.id }) { articleWithAuthor ->
                                 ReadOnlyArticleCard(
-                                    item = article,
-                                    onClick = { navController.navigate("article_detail/${article.id}") }
+                                    item = articleWithAuthor.article,
+                                    author = articleWithAuthor.author,
+                                    onClick = { navController.navigate("article_detail/${articleWithAuthor.author.uid}/${articleWithAuthor.article.id}") }
                                 )
                             }
                         }
@@ -96,15 +103,67 @@ fun ArticleListScreen(
 @Composable
 fun ReadOnlyArticleCard(
     item: Article,
+    author: UserProfile, // Tambahkan parameter penulis
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val timeAgo = remember(item.createdAt) {
+        val now = System.currentTimeMillis()
+        val diff = now - item.createdAt.seconds * 1000
+        when {
+            diff < TimeUnit.MINUTES.toMillis(1) -> "Baru saja"
+            diff < TimeUnit.HOURS.toMillis(1) -> "${TimeUnit.MILLISECONDS.toMinutes(diff)}m"
+            diff < TimeUnit.DAYS.toMillis(1) -> "${TimeUnit.MILLISECONDS.toHours(diff)}h"
+            diff < TimeUnit.DAYS.toMillis(7) -> "${TimeUnit.MILLISECONDS.toDays(diff)}d"
+            else -> "Lama"
+        }
+    }
+
     Card(
         modifier = modifier.fillMaxWidth().clickable { onClick() },
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest)
     ) {
         Column {
+            // Bagian header mirip sosmed
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                AsyncImage(
+                    model = author.profilePictureUrl.ifEmpty { R.drawable.ic_launcher_background },
+                    contentDescription = "Author Profile Picture",
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop,
+                    placeholder = painterResource(id = R.drawable.ic_launcher_background),
+                    error = painterResource(id = R.drawable.ic_launcher_background)
+                )
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = author.name.ifEmpty { "Pengguna" },
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    Text(
+                        text = author.job.ifEmpty { "Tidak Ada Pekerjaan" },
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+                Text(
+                    text = timeAgo,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            // Gambar sampul artikel
             if (item.imageUrl.isNotBlank()) {
                 AsyncImage(
                     model = item.imageUrl,
@@ -117,6 +176,7 @@ fun ReadOnlyArticleCard(
                     error = painterResource(id = R.drawable.ic_launcher_background)
                 )
             }
+            // Konten artikel
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(text = item.title, style = MaterialTheme.typography.titleLarge)
                 if (item.subTitle.isNotBlank()) {

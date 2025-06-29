@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myaura.data.remote.ProfileRemoteDataSource
 import com.example.myaura.domain.model.Article
+import com.example.myaura.domain.model.UserProfile
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,7 +29,25 @@ class ArticleListViewModel @Inject constructor(
             _articlesState.value = ArticleListState.Loading
             try {
                 val articles = profileRemoteDataSource.getAllArticles()
-                _articlesState.value = ArticleListState.Success(articles)
+
+                val authorUids = articles.map { it.userId }.distinct()
+
+                val authors = mutableMapOf<String, UserProfile>()
+                for (uid in authorUids) {
+                    val profile = profileRemoteDataSource.getUserProfile(uid)
+                    if (profile != null) {
+                        authors[uid] = profile
+                    }
+                }
+
+                val articlesWithAuthors = articles.map { article ->
+                    ArticleWithAuthor(
+                        article = article,
+                        author = authors[article.userId] ?: UserProfile()
+                    )
+                }
+
+                _articlesState.value = ArticleListState.Success(articlesWithAuthors)
             } catch (e: Exception) {
                 _articlesState.value = ArticleListState.Error(e.message ?: "Failed to fetch articles")
             }
@@ -36,8 +55,13 @@ class ArticleListViewModel @Inject constructor(
     }
 }
 
+data class ArticleWithAuthor(
+    val article: Article,
+    val author: UserProfile
+)
+
 sealed interface ArticleListState {
     data object Loading : ArticleListState
-    data class Success(val articles: List<Article>) : ArticleListState
+    data class Success(val articles: List<ArticleWithAuthor>) : ArticleListState
     data class Error(val message: String) : ArticleListState
 }

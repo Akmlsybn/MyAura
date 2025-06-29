@@ -127,6 +127,15 @@ fun MyAura() {
             ) {
                 ArticleDetailScreen(navController = navController)
             }
+            composable(
+                route = "article_detail/{userId}/{articleId}",
+                arguments = listOf(
+                    navArgument("userId") { type = NavType.StringType },
+                    navArgument("articleId") { type = NavType.StringType }
+                )
+            ) {
+                ArticleDetailScreen(navController = navController)
+            }
         }
     }
 }

@@ -25,6 +25,7 @@ class ArticleDetailViewModel @Inject constructor(
     val articleState = _articleState.asStateFlow()
 
     private val articleId: String = savedStateHandle.get<String>("articleId")!!
+    private val userId: String = savedStateHandle.get<String>("userId")!!
 
     init {
         loadArticleDetails()
@@ -33,13 +34,8 @@ class ArticleDetailViewModel @Inject constructor(
     private fun loadArticleDetails() {
         viewModelScope.launch {
             _articleState.value = ArticleDetailState.Loading
-            val uid = auth.currentUser?.uid
-            if (uid == null) {
-                _articleState.value = ArticleDetailState.Error("User tidak terautentikasi.")
-                return@launch
-            }
 
-            getArticleUseCase(uid, articleId)
+            getArticleUseCase(userId, articleId)
                 .onSuccess { article ->
                     _articleState.value = ArticleDetailState.Success(article)
                 }
