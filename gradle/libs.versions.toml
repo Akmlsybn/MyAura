@@ -12,6 +12,7 @@ navigationComposeJvmstubs = "2.9.0"
 firebaseCrashlyticsBuildtools = "3.0.4"
 firebaseStorageKtx = "21.0.2"
 firebaseStorage = "21.0.2"
+roomCommonJvm = "2.7.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -32,6 +33,7 @@ androidx-navigation-compose-jvmstubs = { group = "androidx.navigation", name = "
 firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
 firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
+androidx-room-common-jvm = { group = "androidx.room", name = "room-common-jvm", version.ref = "roomCommonJvm" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

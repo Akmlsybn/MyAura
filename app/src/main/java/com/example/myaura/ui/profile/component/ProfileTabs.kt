@@ -15,9 +15,7 @@ fun ProfileTabs(
 
     TabRow(
         selectedTabIndex = selectedTabIndex,
-        // 1. Mengganti warna latar belakang hardcode dengan warna dari tema
         containerColor = MaterialTheme.colorScheme.surface,
-        // 2. Mengatur warna konten default untuk TabRow
         contentColor = MaterialTheme.colorScheme.primary
     ) {
         tabs.forEachIndexed { index, title ->
@@ -25,7 +23,6 @@ fun ProfileTabs(
                 selected = selectedTabIndex == index,
                 onClick = { onTabClick(index) },
                 text = { Text(title) },
-                // 3. Menambahkan warna untuk status terpilih dan tidak terpilih
                 selectedContentColor = MaterialTheme.colorScheme.primary,
                 unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant
             )

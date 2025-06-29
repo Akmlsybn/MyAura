@@ -56,7 +56,6 @@ fun EditArticle(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            // 1. Ganti warna background hardcode dengan warna dari tema
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 24.dp, vertical = 32.dp)
             .verticalScroll(rememberScrollState()),
@@ -69,7 +68,6 @@ fun EditArticle(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp)
-                    // 2. Ganti warna background box dengan warna dari tema
                     .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(8.dp))
                     .clickable { imagePickerLauncher.launch("image/*") },
                 contentAlignment = Alignment.Center
@@ -91,7 +89,6 @@ fun EditArticle(
                     Text(
                         text = "+ Ubah Gambar Sampul",
                         textAlign = TextAlign.Center,
-                        // 3. Ganti warna teks dengan warna dari tema
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
@@ -112,7 +109,6 @@ fun EditArticle(
                     .fillMaxWidth()
                     .height(48.dp),
                 enabled = !editState.isLoading,
-                // 4. Ganti warna tombol dengan warna dari tema
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary

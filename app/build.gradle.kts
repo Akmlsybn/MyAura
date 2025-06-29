@@ -57,6 +57,7 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.3.2")
     implementation("androidx.compose.foundation:foundation:1.7.0")
     implementation("com.google.firebase:firebase-crashlytics-ktx")
+    implementation(libs.androidx.room.common.jvm)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
@@ -75,4 +76,7 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation("androidx.room:room-runtime:2.7.2")
+    kapt("androidx.room:room-compiler:2.7.2")
+    implementation("androidx.room:room-ktx:2.7.2")
 }

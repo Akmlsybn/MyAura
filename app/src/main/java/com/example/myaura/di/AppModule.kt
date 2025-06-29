@@ -1,7 +1,13 @@
 package com.example.myaura.di
 
 import android.content.Context
+import androidx.room.Room
+import com.example.myaura.data.local.AppDatabase
 import com.example.myaura.data.local.SessionRepository
+import com.example.myaura.data.local.dao.ArticleDao
+import com.example.myaura.data.local.dao.PortfolioDao
+import com.example.myaura.data.local.dao.UserProfileDao
+import com.example.myaura.data.local.dao.UserSessionDao
 import com.example.myaura.data.remote.AuthRemoteDataSource
 import com.example.myaura.data.remote.ImgurApiService
 import com.example.myaura.data.remote.ProfileRemoteDataSource
@@ -62,7 +68,33 @@ object AppModule {
     fun provideProfileRemoteDataSource(firestore: FirebaseFirestore): ProfileRemoteDataSource = ProfileRemoteDataSource(firestore)
 
     @Provides @Singleton
-    fun provideProfileRepository(dataSource: ProfileRemoteDataSource): ProfileRepository = ProfileRepositoryImpl(dataSource)
+    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
+        return Room.databaseBuilder(
+            context,
+            AppDatabase::class.java,
+            "my_aura_database"
+        ).build()
+    }
+
+    @Provides @Singleton
+    fun provideUserProfileDao(database: AppDatabase): UserProfileDao = database.userProfileDao()
+
+    @Provides @Singleton
+    fun providePortfolioDao(database: AppDatabase): PortfolioDao = database.portfolioDao()
+
+    @Provides @Singleton
+    fun provideArticleDao(database: AppDatabase): ArticleDao = database.articleDao()
+
+    @Provides @Singleton
+    fun provideUserSessionDao(database: AppDatabase): UserSessionDao = database.userSessionDao()
+
+    @Provides @Singleton
+    fun provideProfileRepository(
+        dataSource: ProfileRemoteDataSource,
+        userProfileDao: UserProfileDao,
+        portfolioDao: PortfolioDao,
+        articleDao: ArticleDao
+    ): ProfileRepository = ProfileRepositoryImpl(dataSource, userProfileDao, portfolioDao, articleDao)
 
     @Provides @Singleton
     fun provideSaveUserProfileUseCase(repo: ProfileRepository): SaveUserProfileUseCase = SaveUserProfileUseCase(repo)
@@ -110,7 +142,8 @@ object AppModule {
     }
 
     @Provides @Singleton
-    fun provideSessionRepository(@ApplicationContext context: Context): SessionRepository { return SessionRepository(context)
+    fun provideSessionRepository(userSessionDao: UserSessionDao): SessionRepository {
+        return SessionRepository(userSessionDao)
     }
 
     @Provides @Singleton

@@ -18,7 +18,6 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.myaura.domain.model.Article
 
-// Tampilan utama halaman detail
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArticleDetailScreen(
@@ -36,7 +35,6 @@ fun ArticleDetailScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Kembali")
                     }
                 },
-                // 1. Mengatur warna TopAppBar agar sesuai tema
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface,
                     titleContentColor = MaterialTheme.colorScheme.onSurface,
@@ -45,18 +43,16 @@ fun ArticleDetailScreen(
             )
         }
     ) { paddingValues ->
-        // 2. Mengatur warna background Box
         Box(modifier = Modifier
             .padding(paddingValues)
             .fillMaxSize()
-            .navigationBarsPadding(), // Menambahkan padding untuk navigation bar sistem
+            .navigationBarsPadding(),
             contentAlignment = Alignment.Center
         ) {
             when (val state = articleState) {
                 is ArticleDetailState.Loading -> CircularProgressIndicator()
                 is ArticleDetailState.Success -> ArticleDetailContent(article = state.article)
                 is ArticleDetailState.Error -> Text(text = state.message, color = MaterialTheme.colorScheme.error)
-                else -> Text("Status tidak diketahui.")
             }
         }
     }
@@ -70,7 +66,6 @@ fun ArticleDetailContent(article: Article?) {
         }
         return
     }
-    // 3. Mengatur warna background Column
     Column(
         modifier = Modifier
             .fillMaxSize()

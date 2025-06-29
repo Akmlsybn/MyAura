@@ -37,7 +37,7 @@ class AddPortfolioViewModel @Inject constructor(
         skill: String,
         projectUrl: String,
         description: String,
-        imageUri: Uri? // <-- Tambahkan parameter ini
+        imageUri: Uri?
     ) {
         if (title.isBlank()) {
             _addState.value = AddPortfolioState(error = "Judul portofolio tidak boleh kosong.")
@@ -90,7 +90,7 @@ class AddPortfolioViewModel @Inject constructor(
                         ""
                     }
                 } else {
-                    "" // URL kosong jika tidak ada gambar diunggah
+                    ""
                 }
 
                 val portfolioItem = PortfolioItem(

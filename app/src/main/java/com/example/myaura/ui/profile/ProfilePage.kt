@@ -30,7 +30,7 @@ import com.example.myaura.ui.profile.component.ProfileTabs
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ProfileScreen(
-    mainNavController: NavController, // NavController utama dari MainActivity
+    mainNavController: NavController,
     viewModel: ProfileViewModel = hiltViewModel(),
 ) {
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
@@ -38,7 +38,6 @@ fun ProfileScreen(
     var showDeleteDialog by remember { mutableStateOf(false) }
     var itemToDelete by remember { mutableStateOf<Any?>(null) }
 
-    // Memantau status login
     LaunchedEffect(viewModel.isUserLoggedIn()) {
         if (!viewModel.isUserLoggedIn()) {
             mainNavController.navigate("signing") {
@@ -47,7 +46,6 @@ fun ProfileScreen(
         }
     }
 
-    // **SOLUSI:** Menggunakan LaunchedEffect dengan rute dari NavController utama
     val navBackStackEntry by mainNavController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
@@ -140,7 +138,7 @@ fun ProfileScreen(
                                     }
                                 }
                             }
-                            1 -> { // Article Tab
+                            1 -> {
                                 item { AddButtonRow(text = "Add Article", onClick = { mainNavController.navigate("add_article") }) }
                                 if (state.articles.isEmpty()) {
                                     item {

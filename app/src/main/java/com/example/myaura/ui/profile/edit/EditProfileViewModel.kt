@@ -84,7 +84,6 @@ class EditProfileViewModel @Inject constructor(
                     val requestBody = imageBytes.toRequestBody("image/jpeg".toMediaTypeOrNull())
                     val imagePart = MultipartBody.Part.createFormData("image", "profile_image.jpg", requestBody)
 
-                    // GANTI DENGAN CLIENT ID IMGUR ANDA
                     val response = imgurApiService.uploadImage("Client-ID 6933ca201b18ccf", imagePart)
 
                     if (response.success) {

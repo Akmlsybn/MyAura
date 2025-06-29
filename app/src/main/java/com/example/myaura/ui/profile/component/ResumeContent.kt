@@ -32,11 +32,9 @@ fun ResumeContent(
 ) {
     val profileState by viewModel.profileState.collectAsState()
 
-    // State untuk mengontrol dialog konfirmasi
     var showDeleteDialog by remember { mutableStateOf(false) }
     var portfolioToDelete by remember { mutableStateOf<PortfolioItem?>(null) }
 
-    // Tampilkan AlertDialog jika showDeleteDialog adalah true
     if (showDeleteDialog && portfolioToDelete != null) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
@@ -45,7 +43,6 @@ fun ResumeContent(
             confirmButton = {
                 Button(
                     onClick = {
-                        // Hanya hapus jika pengguna menekan "Hapus"
                         portfolioToDelete?.id?.let { viewModel.deletePortfolio(it) }
                         showDeleteDialog = false
                     },
@@ -76,13 +73,13 @@ fun ResumeContent(
                 text = "Add Portfolio",
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onBackground // Warna teks sesuai tema
+                color = MaterialTheme.colorScheme.onBackground
             )
             IconButton(onClick = { navController.navigate("add_portfolio") }) {
                 Icon(
                     Icons.Default.Add,
                     contentDescription = "Add Portfolio",
-                    tint = MaterialTheme.colorScheme.primary // Warna ikon sesuai tema
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         }
@@ -105,7 +102,6 @@ fun ResumeContent(
                                     navController.navigate("portfolio_detail/${portfolioItem.id}")
                                 },
                                 onDelete = {
-                                    // **PERBAIKAN:** Panggil state update untuk menampilkan dialog
                                     portfolioToDelete = portfolioItem
                                     showDeleteDialog = true
                                 },

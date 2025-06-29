@@ -73,7 +73,6 @@ class ProfileViewModel @Inject constructor(
                     ProfileState.Empty
                 }
             } else {
-                // Setidaknya satu panggilan API gagal
                 val errorMessage = when {
                     profileResult.isFailure -> profileResult.exceptionOrNull()?.message ?: "Gagal Memuat Profil"
                     portfolioResult.isFailure -> portfolioResult.exceptionOrNull()?.message ?: "Gagal Memuat Portofolio"

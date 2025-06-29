@@ -58,7 +58,6 @@ fun AddArticle(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            // 1. Ganti warna background hardcode dengan warna dari tema
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 24.dp, vertical = 32.dp)
             .verticalScroll(rememberScrollState()),
@@ -68,7 +67,6 @@ fun AddArticle(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(200.dp)
-                // 2. Ganti warna background box dengan warna dari tema
                 .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(8.dp))
                 .clickable { imagePickerLauncher.launch("image/*") },
             contentAlignment = Alignment.Center
@@ -84,7 +82,6 @@ fun AddArticle(
                 Text(
                     text = "+ Tambah Gambar Sampul",
                     textAlign = TextAlign.Center,
-                    // 3. Ganti warna teks dengan warna dari tema
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
@@ -117,7 +114,6 @@ fun AddArticle(
                 .fillMaxWidth()
                 .height(48.dp),
             enabled = !addArticleState.isLoading,
-            // 4. Ganti warna tombol dengan warna dari tema
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary

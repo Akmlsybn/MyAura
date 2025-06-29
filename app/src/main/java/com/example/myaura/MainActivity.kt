@@ -94,7 +94,6 @@ fun MyAura() {
                     SettingsScreen(mainNavController = navController, modifier = Modifier.padding(innerPadding))
                 }
             }
-            // Rute lain yang tidak punya bottom nav bar tetap sama
             composable("edit_profile") {
                 EditProfileScreen(navController = navController)
             }

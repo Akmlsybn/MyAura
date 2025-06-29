@@ -1,52 +1,38 @@
 package com.example.myaura.data.local
 
-import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.preferencesDataStore
-import dagger.hilt.android.qualifiers.ApplicationContext
+import com.example.myaura.data.local.dao.UserSessionDao
+import com.example.myaura.data.local.entity.UserSessionEntity
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "session")
-
 @Singleton
 class SessionRepository @Inject constructor(
-    @ApplicationContext private val context: Context
+    private val userSessionDao: UserSessionDao
 ) {
-    private val IS_LOGGED_IN = booleanPreferencesKey("is_logged_in")
 
-    private val IS_DARK_MODE = booleanPreferencesKey("is_dark_mode")
-
-    val isLoggedIn: Flow<Boolean> = context.dataStore.data
-        .map { preferences ->
-            preferences[IS_LOGGED_IN] ?: false
-        }
+    val isLoggedIn: Flow<Boolean> = userSessionDao.getSession()
+        .map { it?.isLoggedIn ?: false }
 
     suspend fun saveLoginSession(isLoggedIn: Boolean) {
-        context.dataStore.edit { preferences ->
-            preferences[IS_LOGGED_IN] = isLoggedIn
-        }
+        val session = userSessionDao.getSession().first() ?: UserSessionEntity(isLoggedIn = false, isDarkMode = false)
+        userSessionDao.insertSession(session.copy(isLoggedIn = isLoggedIn))
     }
 
-    val isDarkMode: Flow<Boolean> = context.dataStore.data
-        .map {  preferences ->
-            preferences[IS_DARK_MODE] ?: false
-        }
+    val isDarkMode: Flow<Boolean> = userSessionDao.getSession()
+        .map { it?.isDarkMode ?: false }
 
     suspend fun saveDarkModePreference(isDarkMode: Boolean) {
-        context.dataStore.edit { preferences ->
-            preferences[IS_DARK_MODE] = isDarkMode
-        }
+        val session = userSessionDao.getSession().first() ?: UserSessionEntity(isLoggedIn = false, isDarkMode = false)
+        userSessionDao.insertSession(session.copy(isDarkMode = isDarkMode))
     }
 
     suspend fun clearLoginSession(){
-        context.dataStore.edit { preferences ->
-            preferences.remove(IS_LOGGED_IN)
+        val currentSession = userSessionDao.getSession().first()
+        if (currentSession != null) {
+            userSessionDao.insertSession(currentSession.copy(isLoggedIn = false))
         }
     }
 }

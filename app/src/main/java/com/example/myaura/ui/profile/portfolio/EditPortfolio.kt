@@ -46,7 +46,6 @@ fun EditPortfolio(
     }
 
     var showDatePicker by remember { mutableStateOf(false) }
-    // Di sini kita harus mendefinisikan datePickerTarget lagi karena scope-nya lokal
     var datePickerTarget by remember { mutableStateOf<DatePickerTarget?>(null) }
 
 
@@ -94,7 +93,6 @@ fun EditPortfolio(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            // 1. Ganti warna latar belakang
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 24.dp, vertical = 32.dp)
             .verticalScroll(rememberScrollState()),
@@ -107,7 +105,6 @@ fun EditPortfolio(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp)
-                    // 2. Ganti warna background box
                     .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(8.dp))
                     .clickable { imagePickerLauncher.launch("image/*") },
                 contentAlignment = Alignment.Center
@@ -129,7 +126,6 @@ fun EditPortfolio(
                     Text(
                         text = stringResource(R.string.Add_Box),
                         textAlign = TextAlign.Center,
-                        // 3. Ganti warna teks
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
@@ -195,7 +191,6 @@ fun EditPortfolio(
                     .fillMaxWidth()
                     .height(48.dp),
                 enabled = !editState.isLoading,
-                // 4. Ganti warna tombol agar sesuai tema
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     contentColor = MaterialTheme.colorScheme.onPrimary

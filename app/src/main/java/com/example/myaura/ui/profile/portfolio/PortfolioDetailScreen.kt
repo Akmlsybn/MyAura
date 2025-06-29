@@ -35,7 +35,6 @@ fun PortfolioDetailScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Kembali")
                     }
                 },
-                // 1. Mengatur warna TopAppBar agar sesuai tema
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.surface,
                     titleContentColor = MaterialTheme.colorScheme.onSurface,
@@ -48,7 +47,7 @@ fun PortfolioDetailScreen(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize(),
-            contentAlignment = Alignment.Center // Menambahkan alignment ke Box
+            contentAlignment = Alignment.Center
         ) {
             when (val state = portfolioState) {
                 is PortfolioDetailState.Loading -> CircularProgressIndicator()
@@ -59,11 +58,9 @@ fun PortfolioDetailScreen(
     }
 }
 
-// Konten detail portofolio
 @Composable
 fun PortfolioDetailContent(item: PortfolioItem?) {
     if (item == null) {
-        // Mengatur agar teks error di tengah dan sesuai tema
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text("Portofolio tidak ditemukan.", color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
@@ -71,7 +68,7 @@ fun PortfolioDetailContent(item: PortfolioItem?) {
     }
     Column(
         modifier = Modifier
-            .fillMaxSize() // Memastikan Column mengisi semua ruang
+            .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(16.dp)
     ) {
@@ -87,7 +84,6 @@ fun PortfolioDetailContent(item: PortfolioItem?) {
             Spacer(modifier = Modifier.height(16.dp))
         }
 
-        // 2. Memastikan semua teks menggunakan warna dari tema
         Text(text = item.title, style = MaterialTheme.typography.headlineSmall, color = MaterialTheme.colorScheme.onBackground)
         Spacer(modifier = Modifier.height(8.dp))
         Text(text = item.dateRange, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)

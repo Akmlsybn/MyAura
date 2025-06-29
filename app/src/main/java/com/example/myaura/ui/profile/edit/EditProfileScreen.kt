@@ -16,7 +16,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -37,14 +36,11 @@ fun EditProfileScreen(
     val editState by viewModel.editState.collectAsState()
     val context = LocalContext.current
 
-    // State untuk menyimpan URI gambar yang baru dipilih dari galeri
     var imageUri by remember { mutableStateOf<Uri?>(null) }
 
-    // Launcher untuk membuka galeri gambar
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
-        // Saat pengguna memilih gambar, URI-nya akan disimpan di state ini
         imageUri = uri
     }
 
@@ -63,7 +59,6 @@ fun EditProfileScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            // **PERBAIKAN:** Menggunakan warna background dari tema
             .background(MaterialTheme.colorScheme.background)
             .padding(24.dp)
             .verticalScroll(rememberScrollState()),
@@ -72,7 +67,6 @@ fun EditProfileScreen(
         if (editState.isLoading && editState.name.isBlank()) {
             CircularProgressIndicator()
         } else {
-            // Box untuk gambar profil yang bisa diklik
             Box(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier.clickable { imagePickerLauncher.launch("image/*") }
@@ -86,23 +80,19 @@ fun EditProfileScreen(
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
-            // **PERBAIKAN:** Menggunakan warna onBackground dari tema
             Text("Edit Photo", color = MaterialTheme.colorScheme.onBackground)
-
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Semua OutlinedTextField dihubungkan ke ViewModel
             OutlinedTextField(value = editState.name, onValueChange = { viewModel.onNameChange(it) }, label = { Text("Nama") }, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(value = editState.job, onValueChange = { viewModel.onJobChange(it) }, label = { Text("Pekerjaan") }, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(value = editState.tagline, onValueChange = { viewModel.onTaglineChange(it) }, label = { Text("Tagline") }, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(value = editState.bio, onValueChange = { viewModel.onBioChange(it) }, label = { Text("Bio") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = editState.linkedin, onValueChange = { viewModel.onLinkedinChange(it) }, label = { Text("LinkedIn URL") }, modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(value = editState.linkedin, onValueChange = { viewModel.onLinkedinChange(it) }, label = { Text("Instagram URL") }, modifier = Modifier.fillMaxWidth())
             OutlinedTextField(value = editState.github, onValueChange = { viewModel.onGithubChange(it) }, label = { Text("GitHub URL") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = editState.instagram, onValueChange = { viewModel.onInstagramChange(it) }, label = { Text("Instagram URL") }, modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(value = editState.instagram, onValueChange = { viewModel.onInstagramChange(it) }, label = { Text("Linkedin URL") }, modifier = Modifier.fillMaxWidth())
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Tombol Save mengirim semua data, termasuk URI gambar baru
             Button(
                 onClick = {
                     viewModel.onSaveClicked(newImageUri = imageUri)
@@ -110,17 +100,14 @@ fun EditProfileScreen(
                 modifier = Modifier.fillMaxWidth().height(50.dp),
                 enabled = !editState.isLoading,
                 shape = RoundedCornerShape(50),
-                // **PERBAIKAN:** Menggunakan warna primary dari tema
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary // Menggunakan onPrimary untuk teks/ikon
+                    contentColor = MaterialTheme.colorScheme.onPrimary
                 )
             ) {
                 if (editState.isLoading) {
-                    // **PERBAIKAN:** Menggunakan warna onPrimary dari tema
                     CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
                 } else {
-                    // **PERBAIKAN:** Menghapus color dari Text karena sudah diatur di ButtonDefaults
                     Text(stringResource(R.string.Save), fontSize = 16.sp, fontWeight = FontWeight.Bold)
                 }
             }

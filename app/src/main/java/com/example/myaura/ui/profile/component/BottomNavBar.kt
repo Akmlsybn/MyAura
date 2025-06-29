@@ -28,11 +28,10 @@ fun BottomNavBar(navController: NavController) {
     val navItems = listOf(
         BottomNavItem("Profile", R.drawable.home, "profile_page"),
         BottomNavItem("Search", R.drawable.search, "search_screen"),
-        BottomNavItem("Article", R.drawable.newspaper, "article_list"),
+        BottomNavItem("Article", R.drawable.article, "article_list"),
         BottomNavItem("Settings", R.drawable.setting, "settings_screen")
     )
 
-    // PERUBAHAN 1: Menambahkan warna pada container NavigationBar
     NavigationBar(
         containerColor = MaterialTheme.colorScheme.surface,
         contentColor = MaterialTheme.colorScheme.onSurface

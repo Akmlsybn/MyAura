@@ -59,7 +59,7 @@ fun SignUp(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background) // Gunakan warna background dari tema
+            .background(MaterialTheme.colorScheme.background)
             .padding(24.dp)
             .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -70,7 +70,7 @@ fun SignUp(
         Text(
             text = stringResource(R.string.app_name),
             fontSize = 36.sp,
-            color = MaterialTheme.colorScheme.primary, // Gunakan warna primary dari tema
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.align(Alignment.Start)
         )
         Spacer(modifier = Modifier.height(12.dp))

@@ -29,7 +29,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-// Enum ini kita pertahankan sesuai kode asli Anda
 enum class DatePickerTarget { START, END }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,7 +37,6 @@ fun PortfolioForm(
     navController: NavController,
     viewModel: AddPortfolioViewModel = hiltViewModel()
 ) {
-    // Semua state dan logika Anda tetap sama
     var title by rememberSaveable { mutableStateOf("") }
     var startDateText by rememberSaveable { mutableStateOf("Tanggal Mulai") }
     var endDateText by rememberSaveable { mutableStateOf("Tanggal Selesai") }
@@ -85,7 +83,6 @@ fun PortfolioForm(
                         }
                         showDatePicker = false
                     },
-                    // Menggunakan warna tema untuk tombol
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
                 ) { Text("OK") }
             },
@@ -100,10 +97,9 @@ fun PortfolioForm(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            // 1. Ganti warna latar belakang
             .background(MaterialTheme.colorScheme.background)
             .padding(horizontal = 24.dp)
-            .padding(vertical = 32.dp) // Menggunakan satu padding vertikal
+            .padding(vertical = 32.dp)
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -111,7 +107,6 @@ fun PortfolioForm(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(200.dp)
-                // 2. Ganti warna latar belakang box
                 .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(8.dp))
                 .clickable { imagePickerLauncher.launch("image/*")},
             contentAlignment = Alignment.Center
@@ -127,7 +122,6 @@ fun PortfolioForm(
                 Text(
                     text = stringResource(R.string.Add_Box),
                     textAlign = TextAlign.Center,
-                    // 3. Ganti warna teks
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
@@ -205,7 +199,6 @@ fun PortfolioForm(
                 .fillMaxWidth()
                 .height(48.dp),
             enabled = !addState.isLoading,
-            // 4. Ganti warna tombol agar sesuai tema
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary

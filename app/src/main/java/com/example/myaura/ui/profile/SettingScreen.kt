@@ -24,7 +24,6 @@ fun SettingsScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            // 1. Menambahkan warna latar belakang sesuai tema
             .background(MaterialTheme.colorScheme.background)
             .padding(16.dp)
     ) {
@@ -33,7 +32,6 @@ fun SettingsScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            // 2. Memberi warna pada teks agar sesuai tema
             Text(
                 "Dark Mode",
                 style = MaterialTheme.typography.bodyLarge,
@@ -42,7 +40,6 @@ fun SettingsScreen(
             Switch(
                 checked = isDarkMode,
                 onCheckedChange = { settingsViewModel.setDarkMode(it) },
-                // 3. Memberi warna pada Switch agar sesuai tema
                 colors = SwitchDefaults.colors(
                     checkedThumbColor = MaterialTheme.colorScheme.primary,
                     checkedTrackColor = MaterialTheme.colorScheme.primaryContainer,
@@ -53,11 +50,9 @@ fun SettingsScreen(
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-        // 4. Memberi warna pada Divider
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Tombol Logout sudah menggunakan warna dari tema (error)
         Button(
             onClick = {
                 profileViewModel.logout()
@@ -67,7 +62,7 @@ fun SettingsScreen(
             },
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.error,
-                contentColor = MaterialTheme.colorScheme.onError // Warna teks tombol logout
+                contentColor = MaterialTheme.colorScheme.onError
             ),
             modifier = Modifier.fillMaxWidth()
         ) {

@@ -76,7 +76,6 @@ fun OnboardingScreen(navController: NavController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(48.dp),
-            // Warna tombol sekarang mengikuti tema
             colors = ButtonDefaults.buttonColors(
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
@@ -85,7 +84,7 @@ fun OnboardingScreen(navController: NavController) {
             val buttonText = if (pagerState.currentPage < pagerState.pageCount - 1) {
                 stringResource(id = R.string.next)
             } else {
-                "Selesai" // Anda bisa memindahkan ini ke strings.xml
+                "Selesai"
             }
             Text(text = buttonText)
         }

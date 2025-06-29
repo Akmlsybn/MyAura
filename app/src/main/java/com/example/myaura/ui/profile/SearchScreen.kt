@@ -51,7 +51,6 @@ fun SearchScreen(
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             items(searchResults) { user ->
                 UserCard(user = user, onClick = {
-                    // Navigasi ke halaman profil pengguna lain
                     navController.navigate("profile_page/${user.uid}")
                 })
             }
@@ -71,7 +70,6 @@ fun UserCard(user: UserProfile, onClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Gambar Profil
             AsyncImage(
                 model = user.profilePictureUrl,
                 contentDescription = "Profile Picture",

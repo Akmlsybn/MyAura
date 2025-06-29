@@ -68,13 +68,12 @@ class EditArticleViewModel @Inject constructor(
     fun onSubTitleChange(subTitle: String) { _editState.value = _editState.value.copy(subTitle = subTitle) }
     fun onContentChange(content: String) { _editState.value = _editState.value.copy(content = content) }
 
-    fun onUpdateClicked(newImageUri: Uri?) { // <-- Tambahkan parameter
+    fun onUpdateClicked(newImageUri: Uri?) {
         viewModelScope.launch {
             _editState.value = _editState.value.copy(isLoading = true)
             val uid = auth.currentUser?.uid ?: return@launch
 
             try {
-                // Logika unggah gambar ke Imgur (reusable dari EditProfileViewModel)
                 val finalImageUrl = if (newImageUri != null) {
                     val inputStream = context.contentResolver.openInputStream(newImageUri)
                     val imageBytes = inputStream?.readBytes()
@@ -92,10 +91,10 @@ class EditArticleViewModel @Inject constructor(
                             return@launch
                         }
                     } else {
-                        _editState.value.imageUrl // Tetap gunakan URL lama jika gagal membaca
+                        _editState.value.imageUrl
                     }
                 } else {
-                    _editState.value.imageUrl // Tetap gunakan URL lama jika tidak ada gambar baru
+                    _editState.value.imageUrl
                 }
 
                 val currentState = _editState.value

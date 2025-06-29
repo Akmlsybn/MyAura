@@ -22,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -75,7 +74,7 @@ fun ProfileHeader(
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary // Warna teks tombol
+                    contentColor = MaterialTheme.colorScheme.onPrimary
                 )
             ) {
                 Text(stringResource(R.string.EditProfile), fontSize = 12.sp)
@@ -87,7 +86,6 @@ fun ProfileHeader(
         Column(
             modifier = Modifier.weight(1f)
         ) {
-            // 1. Tambahkan warna pada nama pengguna
             Text(
                 userProfile.name,
                 fontSize = 20.sp,
@@ -113,17 +111,15 @@ fun ProfileHeader(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 3
             )
-            Spacer(modifier = Modifier.height(8.dp)) // Menambahkan spasi sebelum ikon
+            Spacer(modifier = Modifier.height(8.dp))
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 val instagramUrl = userProfile.socialMediaLinks["instagram"]
                 if (instagramUrl?.isNotBlank() == true) {
                     Image(
-                        painter = painterResource(R.drawable.instagram),
+                        painter = painterResource(R.drawable.instagram__1_),
                         contentDescription = "Instagram",
-                        // 2. Tambahkan ColorFilter untuk memberi warna pada ikon
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant),
                         modifier = Modifier
                             .size(24.dp)
                             .clickable {
@@ -137,10 +133,8 @@ fun ProfileHeader(
                 val githubUrl = userProfile.socialMediaLinks["github"]
                 if (githubUrl?.isNotBlank() == true) {
                     Image(
-                        painter = painterResource(R.drawable.facebook), // Ganti dengan drawable yang benar
+                        painter = painterResource(R.drawable.github),
                         contentDescription = "github",
-                        // 2. Tambahkan ColorFilter untuk memberi warna pada ikon
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant),
                         modifier = Modifier
                             .size(24.dp)
                             .clickable {
@@ -154,10 +148,8 @@ fun ProfileHeader(
                 val linkedinUrl = userProfile.socialMediaLinks["linkedin"]
                 if (linkedinUrl?.isNotBlank() == true) {
                     Image(
-                        painter = painterResource(R.drawable.youtube), // Ganti dengan drawable yang benar
+                        painter = painterResource(R.drawable.linkedin),
                         contentDescription = "Linkedin",
-                        // 2. Tambahkan ColorFilter untuk memberi warna pada ikon
-                        colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurfaceVariant),
                         modifier = Modifier
                             .size(24.dp)
                             .clickable {
