@@ -52,63 +52,78 @@ fun EditProfileScreen(
         }
     }
 
-    editState.error?.let {
-        Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+    val snackbarHostState = remember { SnackbarHostState() }
+    LaunchedEffect(key1 = editState.error) {
+        editState.error?.let { errorMessage ->
+            snackbarHostState.showSnackbar(
+                message = errorMessage,
+                actionLabel = "Dismiss",
+                duration = SnackbarDuration.Short
+            )
+            viewModel.onNavigationDone()
+        }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(24.dp)
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        if (editState.isLoading && editState.name.isBlank()) {
-            CircularProgressIndicator()
-        } else {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.clickable { imagePickerLauncher.launch("image/*") }
-            ) {
-                AsyncImage(
-                    model = imageUri ?: editState.profilePictureUrl.ifEmpty { R.drawable.ic_launcher_background },
-                    contentDescription = "Profile Picture",
-                    placeholder = painterResource(id = R.drawable.ic_launcher_background),
-                    modifier = Modifier.size(100.dp).clip(CircleShape),
-                    contentScale = ContentScale.Crop
-                )
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Text("Edit Photo", color = MaterialTheme.colorScheme.onBackground)
-            Spacer(modifier = Modifier.height(24.dp))
+    Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
+        modifier = Modifier.fillMaxSize()
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .background(MaterialTheme.colorScheme.background)
+                .padding(24.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            if (editState.isLoading && editState.name.isBlank()) {
+                CircularProgressIndicator()
+            } else {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier.clickable { imagePickerLauncher.launch("image/*") }
+                ) {
+                    AsyncImage(
+                        model = imageUri ?: editState.profilePictureUrl.ifEmpty { R.drawable.ic_launcher_background },
+                        contentDescription = "Profile Picture",
+                        placeholder = painterResource(id = R.drawable.ic_launcher_background),
+                        modifier = Modifier.size(100.dp).clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Text("Edit Photo", color = MaterialTheme.colorScheme.onBackground)
 
-            OutlinedTextField(value = editState.name, onValueChange = { viewModel.onNameChange(it) }, label = { Text("Nama") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = editState.job, onValueChange = { viewModel.onJobChange(it) }, label = { Text("Pekerjaan") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = editState.tagline, onValueChange = { viewModel.onTaglineChange(it) }, label = { Text("Tagline") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = editState.bio, onValueChange = { viewModel.onBioChange(it) }, label = { Text("Bio") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = editState.linkedin, onValueChange = { viewModel.onLinkedinChange(it) }, label = { Text("Instagram URL") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = editState.github, onValueChange = { viewModel.onGithubChange(it) }, label = { Text("GitHub URL") }, modifier = Modifier.fillMaxWidth())
-            OutlinedTextField(value = editState.instagram, onValueChange = { viewModel.onInstagramChange(it) }, label = { Text("Linkedin URL") }, modifier = Modifier.fillMaxWidth())
+                Spacer(modifier = Modifier.height(24.dp))
 
-            Spacer(modifier = Modifier.height(24.dp))
+                OutlinedTextField(value = editState.name, onValueChange = { viewModel.onNameChange(it) }, label = { Text("Nama") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = editState.job, onValueChange = { viewModel.onJobChange(it) }, label = { Text("Pekerjaan") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = editState.tagline, onValueChange = { viewModel.onTaglineChange(it) }, label = { Text("Tagline") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = editState.bio, onValueChange = { viewModel.onBioChange(it) }, label = { Text("Bio") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = editState.linkedin, onValueChange = { viewModel.onLinkedinChange(it) }, label = { Text("LinkedIn URL") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = editState.github, onValueChange = { viewModel.onGithubChange(it) }, label = { Text("GitHub URL") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = editState.instagram, onValueChange = { viewModel.onInstagramChange(it) }, label = { Text("Instagram URL") }, modifier = Modifier.fillMaxWidth())
 
-            Button(
-                onClick = {
-                    viewModel.onSaveClicked(newImageUri = imageUri)
-                },
-                modifier = Modifier.fillMaxWidth().height(50.dp),
-                enabled = !editState.isLoading,
-                shape = RoundedCornerShape(50),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                )
-            ) {
-                if (editState.isLoading) {
-                    CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
-                } else {
-                    Text(stringResource(R.string.Save), fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Button(
+                    onClick = {
+                        viewModel.onSaveClicked(newImageUri = imageUri)
+                    },
+                    modifier = Modifier.fillMaxWidth().height(50.dp),
+                    enabled = !editState.isLoading,
+                    shape = RoundedCornerShape(50),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    )
+                ) {
+                    if (editState.isLoading) {
+                        CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
+                    } else {
+                        Text(stringResource(R.string.Save), fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                    }
                 }
             }
         }

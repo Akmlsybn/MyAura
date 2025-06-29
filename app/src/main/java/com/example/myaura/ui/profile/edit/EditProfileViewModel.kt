@@ -72,7 +72,24 @@ class EditProfileViewModel @Inject constructor(
     fun onSaveClicked(newImageUri: Uri?)
     {
         viewModelScope.launch {
-            _editState.value = _editState.value.copy(isLoading = true)
+            val currentState = _editState.value
+            if (currentState.name.isBlank()) {
+                _editState.value = currentState.copy(error = "Nama tidak boleh kosong.")
+                return@launch
+            }
+            if (currentState.job.isBlank()) {
+                _editState.value = currentState.copy(error = "Pekerjaan tidak boleh kosong.")
+                return@launch
+            }
+            if (currentState.tagline.isBlank()) {
+                _editState.value = currentState.copy(error = "Tagline tidak boleh kosong.")
+                return@launch
+            }
+            if (currentState.bio.isBlank()) {
+                _editState.value = currentState.copy(error = "Bio tidak boleh kosong.")
+                return@launch
+            }
+            _editState.value = _editState.value.copy(isLoading = true, error = null)
             val currentUserUid = auth.currentUser?.uid ?: return@launch
 
             try {
