@@ -184,11 +184,11 @@ fun PortfolioForm(
 
         Button(
             onClick = {
-                val finalEndDate = if (isCurrentProject) "Saat Ini" else endDateText
-                val dateRange = "$startDateText - $finalEndDate"
                 viewModel.onAddPortfolioClicked(
                     title = title,
-                    dateRange = dateRange,
+                    startDateStr = startDateText,
+                    endDateStr = endDateText,
+                    isCurrent = isCurrentProject,
                     skill = skill,
                     projectUrl = url,
                     description = description,

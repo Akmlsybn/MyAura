@@ -20,6 +20,8 @@ import javax.inject.Inject
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @HiltViewModel
 class EditPortfolioViewModel @Inject constructor(
@@ -82,12 +84,35 @@ class EditPortfolioViewModel @Inject constructor(
     fun onUpdateClicked(newImageUri: Uri?) {
         viewModelScope.launch {
             val currentState = _editState.value
-            if (currentState.title.isBlank()) {
-                _editState.value = currentState.copy(error = "Judul portofolio tidak boleh kosong.")
+
+            if (currentState.startDate == "Tanggal Mulai" || currentState.startDate.isBlank()) {
+                _editState.value = currentState.copy(error = "Tanggal mulai harus diisi.")
                 return@launch
             }
-            if (currentState.startDate == "Tanggal Mulai" || (!currentState.isCurrent && currentState.endDate == "Tanggal Selesai")) {
-                _editState.value = currentState.copy(error = "Silakan lengkapi pilihan tanggal.")
+
+            if (!currentState.isCurrent) {
+                if (currentState.endDate == "Tanggal Selesai" || currentState.endDate.isBlank()) {
+                    _editState.value = currentState.copy(error = "Tanggal selesai harus diisi.")
+                    return@launch
+                }
+
+                val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+                try {
+                    val startDate = dateFormat.parse(currentState.startDate)
+                    val endDate = dateFormat.parse(currentState.endDate)
+
+                    if (startDate != null && endDate != null && startDate.after(endDate)) {
+                        _editState.value = currentState.copy(error = "Tanggal mulai tidak boleh setelah tanggal selesai.")
+                        return@launch
+                    }
+                } catch (e: Exception) {
+                    _editState.value = currentState.copy(error = "Format tanggal tidak valid.")
+                    return@launch
+                }
+            }
+
+            if (currentState.title.isBlank()) {
+                _editState.value = currentState.copy(error = "Judul portofolio tidak boleh kosong.")
                 return@launch
             }
             if (currentState.skill.isBlank()) {

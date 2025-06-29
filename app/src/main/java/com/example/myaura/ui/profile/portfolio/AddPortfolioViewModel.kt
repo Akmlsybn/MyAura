@@ -18,6 +18,8 @@ import javax.inject.Inject
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 
 @HiltViewModel
@@ -33,18 +35,43 @@ class AddPortfolioViewModel @Inject constructor(
 
     fun onAddPortfolioClicked(
         title: String,
-        dateRange: String,
+        startDateStr: String,
+        endDateStr: String,
+        isCurrent: Boolean,
         skill: String,
         projectUrl: String,
         description: String,
         imageUri: Uri?
     ) {
-        if (title.isBlank()) {
-            _addState.value = AddPortfolioState(error = "Judul portofolio tidak boleh kosong.")
+        if (startDateStr == "Tanggal Mulai") {
+            _addState.value = AddPortfolioState(error = "Tanggal mulai harus diisi.")
             return
         }
-        if (dateRange.contains("Tanggal Mulai") || (dateRange.contains("Tanggal Selesai") && !dateRange.contains("Saat Ini"))) {
-            _addState.value = AddPortfolioState(error = "Silakan lengkapi pilihan tanggal.")
+
+        // 2. Jika bukan proyek saat ini, validasi tanggal selesai
+        if (!isCurrent) {
+            if (endDateStr == "Tanggal Selesai") {
+                _addState.value = AddPortfolioState(error = "Tanggal selesai harus diisi.")
+                return
+            }
+
+            val dateFormat = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+            try {
+                val startDate = dateFormat.parse(startDateStr)
+                val endDate = dateFormat.parse(endDateStr)
+
+                if (startDate != null && endDate != null && startDate.after(endDate)) {
+                    _addState.value = AddPortfolioState(error = "Tanggal mulai tidak boleh setelah tanggal selesai.")
+                    return
+                }
+            } catch (e: Exception) {
+                _addState.value = AddPortfolioState(error = "Format tanggal tidak valid.")
+                return
+            }
+        }
+
+        if (title.isBlank()) {
+            _addState.value = AddPortfolioState(error = "Judul portofolio tidak boleh kosong.")
             return
         }
         if (skill.isBlank()) {
@@ -62,8 +89,8 @@ class AddPortfolioViewModel @Inject constructor(
 
         viewModelScope.launch {
             _addState.value = AddPortfolioState(isLoading = true)
-
             val currentUserUid = auth.currentUser?.uid
+
             if (currentUserUid == null) {
                 _addState.value = AddPortfolioState(error = "Pengguna tidak ditemukan.")
                 return@launch
@@ -92,6 +119,9 @@ class AddPortfolioViewModel @Inject constructor(
                 } else {
                     ""
                 }
+
+                val finalEndDate = if (isCurrent) "Saat Ini" else endDateStr
+                val dateRange = "$startDateStr - $finalEndDate"
 
                 val portfolioItem = PortfolioItem(
                     userId = currentUserUid,
