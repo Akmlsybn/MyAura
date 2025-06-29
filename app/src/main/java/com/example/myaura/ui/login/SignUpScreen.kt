@@ -147,23 +147,6 @@ fun SignUp(
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-            Text(stringResource(R.string.Or), color = MaterialTheme.colorScheme.onBackground)
-            Spacer(modifier = Modifier.height(16.dp))
-
-            OutlinedButton(
-                onClick = { },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.google),
-                    contentDescription = "Google Icon",
-                    modifier = Modifier.size(20.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(stringResource(R.string.Google), color = MaterialTheme.colorScheme.onBackground)
-            }
 
             TextButton(
                 onClick = { navController.navigate("signing") }
