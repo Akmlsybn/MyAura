@@ -123,8 +123,7 @@ fun ProfileHeader(
                         modifier = Modifier
                             .size(24.dp)
                             .clickable {
-                                val intent = Intent(Intent.ACTION_VIEW, instagramUrl.toUri())
-                                context.startActivity(intent)
+                                openUrl(context, instagramUrl)
                             }
                     )
                 }
@@ -138,8 +137,7 @@ fun ProfileHeader(
                         modifier = Modifier
                             .size(24.dp)
                             .clickable {
-                                val intent = Intent(Intent.ACTION_VIEW, githubUrl.toUri())
-                                context.startActivity(intent)
+                                openUrl(context, githubUrl)
                             },
                     )
                 }
@@ -153,12 +151,26 @@ fun ProfileHeader(
                         modifier = Modifier
                             .size(24.dp)
                             .clickable {
-                                val intent = Intent(Intent.ACTION_VIEW, linkedinUrl.toUri())
-                                context.startActivity(intent)
+                                openUrl(context, linkedinUrl)
                             }
                     )
                 }
             }
         }
+    }
+}
+
+private fun openUrl(context: android.content.Context, url: String) {
+    var finalUrl = url
+
+    if (!finalUrl.startsWith("http://") && !finalUrl.startsWith("https://")) {
+        finalUrl = "https://$finalUrl"
+    }
+
+    try {
+        val intent = Intent(Intent.ACTION_VIEW, finalUrl.toUri())
+        context.startActivity(intent)
+    } catch (e: Exception) {
+        android.widget.Toast.makeText(context, "Tidak dapat membuka link. Pastikan URL valid dan ada browser terinstal.", android.widget.Toast.LENGTH_LONG).show()
     }
 }

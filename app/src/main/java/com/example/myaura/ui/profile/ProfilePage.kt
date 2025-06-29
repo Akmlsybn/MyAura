@@ -153,7 +153,7 @@ fun ProfileScreen(
                                         ArticleCard(
                                             modifier = Modifier
                                                 .padding(horizontal = 16.dp, vertical = 6.dp)
-                                                .clickable { mainNavController.navigate("article_detail/${item.id}") },
+                                                .clickable { mainNavController.navigate("article_detail/${item.userId}/${item.id}") },
                                             item = item,
                                             onEdit = { mainNavController.navigate("edit_article/${item.id}") },
                                             onDelete = {
