@@ -30,6 +30,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.Button
 import androidx.compose.runtime.remember
+import androidx.compose.ui.res.stringResource
 import com.example.myaura.domain.model.UserProfile
 import java.util.concurrent.TimeUnit
 
@@ -45,12 +46,12 @@ fun ArticleListScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Semua Artikel") },
+                title = { Text(stringResource(id = R.string.all_articles_title)) },
                 actions = {
                     IconButton(onClick = { viewModel.fetchArticles() }) {
                         Icon(
                             imageVector = Icons.Default.Refresh,
-                            contentDescription = "Refresh"
+                            contentDescription = stringResource(id = R.string.refresh_button)
                         )
                     }
                 }
@@ -67,7 +68,10 @@ fun ArticleListScreen(
                 is ArticleListState.Success -> {
                     if (state.articles.isEmpty()) {
                         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                            Text("Belum ada artikel yang tersedia.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(
+                                stringResource(id = R.string.no_articles_available),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
                         }
                     } else {
                         LazyColumn(
@@ -90,7 +94,7 @@ fun ArticleListScreen(
                             Text(state.message, color = MaterialTheme.colorScheme.error)
                             Spacer(modifier = Modifier.height(8.dp))
                             Button(onClick = { viewModel.fetchArticles() }) {
-                                Text("Retry")
+                                Text(stringResource(id = R.string.retry_button))
                             }
                         }
                     }
@@ -103,29 +107,30 @@ fun ArticleListScreen(
 @Composable
 fun ReadOnlyArticleCard(
     item: Article,
-    author: UserProfile, // Tambahkan parameter penulis
+    author: UserProfile,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val timeAgo = remember(item.createdAt) {
-        val now = System.currentTimeMillis()
-        val diff = now - item.createdAt.seconds * 1000
-        when {
-            diff < TimeUnit.MINUTES.toMillis(1) -> "Baru saja"
-            diff < TimeUnit.HOURS.toMillis(1) -> "${TimeUnit.MILLISECONDS.toMinutes(diff)}m"
-            diff < TimeUnit.DAYS.toMillis(1) -> "${TimeUnit.MILLISECONDS.toHours(diff)}h"
-            diff < TimeUnit.DAYS.toMillis(7) -> "${TimeUnit.MILLISECONDS.toDays(diff)}d"
-            else -> "Lama"
-        }
+    val diff = remember(item.createdAt) {
+        System.currentTimeMillis() - item.createdAt.seconds * 1000
+    }
+
+    val timeAgo = when {
+        diff < TimeUnit.MINUTES.toMillis(1) -> stringResource(id = R.string.time_just_now)
+        diff < TimeUnit.HOURS.toMillis(1) -> stringResource(id = R.string.time_minutes_format, TimeUnit.MILLISECONDS.toMinutes(diff))
+        diff < TimeUnit.DAYS.toMillis(1) -> stringResource(id = R.string.time_hours_format, TimeUnit.MILLISECONDS.toHours(diff))
+        diff < TimeUnit.DAYS.toMillis(7) -> stringResource(id = R.string.time_days_format, TimeUnit.MILLISECONDS.toDays(diff))
+        else -> stringResource(id = R.string.time_long_ago)
     }
 
     Card(
-        modifier = modifier.fillMaxWidth().clickable { onClick() },
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest)
     ) {
         Column {
-            // Bagian header mirip sosmed
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -135,7 +140,7 @@ fun ReadOnlyArticleCard(
             ) {
                 AsyncImage(
                     model = author.profilePictureUrl.ifEmpty { R.drawable.ic_launcher_background },
-                    contentDescription = "Author Profile Picture",
+                    contentDescription = stringResource(id = R.string.author_profile_picture),
                     modifier = Modifier
                         .size(40.dp)
                         .clip(CircleShape),
@@ -145,13 +150,13 @@ fun ReadOnlyArticleCard(
                 )
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = author.name.ifEmpty { "Pengguna" },
+                        text = author.name.ifEmpty { stringResource(id = R.string.default_user_name) },
                         style = MaterialTheme.typography.titleSmall,
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
-                        text = author.job.ifEmpty { "Tidak Ada Pekerjaan" },
+                        text = author.job.ifEmpty { stringResource(id = R.string.no_job_title) },
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -163,11 +168,10 @@ fun ReadOnlyArticleCard(
                 )
             }
 
-            // Gambar sampul artikel
             if (item.imageUrl.isNotBlank()) {
                 AsyncImage(
                     model = item.imageUrl,
-                    contentDescription = "Article Cover Image",
+                    contentDescription = stringResource(id = R.string.article_cover_image),
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(180.dp),
@@ -176,7 +180,6 @@ fun ReadOnlyArticleCard(
                     error = painterResource(id = R.drawable.ic_launcher_background)
                 )
             }
-            // Konten artikel
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(text = item.title, style = MaterialTheme.typography.titleLarge)
                 if (item.subTitle.isNotBlank()) {

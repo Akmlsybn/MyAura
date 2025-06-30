@@ -84,7 +84,7 @@ fun OnboardingScreen(navController: NavController) {
             val buttonText = if (pagerState.currentPage < pagerState.pageCount - 1) {
                 stringResource(id = R.string.next)
             } else {
-                "Selesai"
+                stringResource(id = R.string.finish)
             }
             Text(text = buttonText)
         }

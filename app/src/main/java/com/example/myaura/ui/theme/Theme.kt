@@ -75,7 +75,6 @@ private val HighContrastDarkColors = darkColorScheme(
 @Composable
 fun MyAuraTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color dimatikan agar tidak menimpa tema yang sudah kita tentukan
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
@@ -84,7 +83,6 @@ fun MyAuraTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-        // Selalu gunakan skema High Contrast
         darkTheme -> HighContrastDarkColors
         else -> HighContrastLightColors
     }

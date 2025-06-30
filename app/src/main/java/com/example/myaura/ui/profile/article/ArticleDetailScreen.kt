@@ -12,10 +12,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.myaura.R
 import com.example.myaura.domain.model.Article
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,10 +31,13 @@ fun ArticleDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Detail Artikel") },
+                title = { Text(stringResource(id = R.string.article_detail_title)) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Kembali")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(id = R.string.back_button)
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -43,10 +48,11 @@ fun ArticleDetailScreen(
             )
         }
     ) { paddingValues ->
-        Box(modifier = Modifier
-            .padding(paddingValues)
-            .fillMaxSize()
-            .navigationBarsPadding(),
+        Box(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize()
+                .navigationBarsPadding(),
             contentAlignment = Alignment.Center
         ) {
             when (val state = articleState) {
@@ -62,7 +68,10 @@ fun ArticleDetailScreen(
 fun ArticleDetailContent(article: Article?) {
     if (article == null) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("Artikel tidak ditemukan.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(
+                text = stringResource(id = R.string.article_not_found),
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
         return
     }

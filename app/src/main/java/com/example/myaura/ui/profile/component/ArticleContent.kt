@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -40,8 +41,15 @@ fun ArticleContent(
     if (showDeleteDialog && articleToDelete != null) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Konfirmasi Hapus") },
-            text = { Text("Apakah Anda yakin ingin menghapus artikel '${articleToDelete?.title}'?") },
+            title = { Text(stringResource(id = R.string.delete_confirmation_title)) },
+            text = {
+                Text(
+                    stringResource(
+                        id = R.string.delete_confirmation_message,
+                        articleToDelete?.title.orEmpty()
+                    )
+                )
+            },
             confirmButton = {
                 Button(
                     onClick = {
@@ -50,12 +58,12 @@ fun ArticleContent(
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
                 ) {
-                    Text("Hapus")
+                    Text(stringResource(id = R.string.delete_button))
                 }
             },
             dismissButton = {
                 Button(onClick = { showDeleteDialog = false }) {
-                    Text("Batal")
+                    Text(stringResource(id = R.string.cancel_button))
                 }
             }
         )
@@ -72,7 +80,7 @@ fun ArticleContent(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Add Article",
+                text = stringResource(id = R.string.add_article),
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onBackground
@@ -80,7 +88,7 @@ fun ArticleContent(
             IconButton(onClick = { navController.navigate("add_article") }) {
                 Icon(
                     Icons.Default.Add,
-                    contentDescription = "Add Article",
+                    contentDescription = stringResource(id = R.string.add_article),
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
@@ -91,7 +99,7 @@ fun ArticleContent(
             is ProfileState.Success -> {
                 if (state.articles.isEmpty()) {
                     Text(
-                        "Anda belum menulis artikel.",
+                        stringResource(id = R.string.no_articles_written),
                         modifier = Modifier.padding(vertical = 16.dp),
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -104,7 +112,6 @@ fun ArticleContent(
                                     navController.navigate("article_detail/${article.id}")
                                 },
                                 onDelete = {
-                                    // **PERBAIKAN:** Panggil state update untuk menampilkan dialog
                                     articleToDelete = article
                                     showDeleteDialog = true
                                 },
@@ -142,7 +149,7 @@ fun ArticleCard(
             if (item.imageUrl.isNotBlank()) {
                 AsyncImage(
                     model = item.imageUrl,
-                    contentDescription = "Article Cover Image",
+                    contentDescription = stringResource(id = R.string.article_cover_image),
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(180.dp),
@@ -151,7 +158,6 @@ fun ArticleCard(
                     error = painterResource(id = R.drawable.ic_launcher_background)
                 )
             }
-            // **SOLUSI:** Tambahkan Column bersarang untuk padding konten teks
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(text = item.title, style = MaterialTheme.typography.titleLarge)
                 if (item.subTitle.isNotBlank()) {
@@ -171,10 +177,10 @@ fun ArticleCard(
                 )
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
                     IconButton(onClick = onEdit) {
-                        Icon(Icons.Default.Edit, contentDescription = "Edit Article")
+                        Icon(Icons.Default.Edit, contentDescription = stringResource(id = R.string.edit_article_cd))
                     }
                     IconButton(onClick = onDelete) {
-                        Icon(Icons.Default.Delete, contentDescription = "Delete Article")
+                        Icon(Icons.Default.Delete, contentDescription = stringResource(id = R.string.delete_article_cd))
                     }
                 }
             }

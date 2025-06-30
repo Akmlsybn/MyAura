@@ -1,73 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">MyAura</string>
-    <string name="tagline">Bangun Identitas Digital Anda</string>
-    <string name="next">Selanjutnya</string>
-    <string name="Welcome_sign">Selamat Datang</string>
-
-    <string name="onboard_1">Tunjukkan siapa dirimu.\nTampilkan akun yang kamu pilih."</string>
-    <string name="welcome">Buat profil yang mencerminkan dirimu dan terhubung dengan dunia profesional</string>
-
-    <string name="onboard_2">Tampilan Portofolio Mu</string>
-    <string name="welcome2">Unggah proyek, sertifikat, atau pencapaian yang menunjukkan potensimu.</string>
-
-    <string name="onboard_3">Tuangkan Pemikiranmu</string>
-    <string name="welcome3">Buat profil yang mencerminkan dirimu dan terhubung dengan dunia profesional.</string>
+    <string name="tagline">Tunjukkan siapa dirimu</string>
+    <string name="action_dismiss">Tutup</string>
+    <string name="back_button">Kembali</string>
+    <string name="ok_button">OK</string>
+    <string name="cancel_button">Batal</string>
+    <string name="delete_button">Hapus</string>
+    <string name="save_button">Simpan</string>
+    <string name="save_edits_button">Simpan Perubahan</string>
+    <string name="retry_button">Coba Lagi</string>
+    <string name="title">Judul</string>
+    <string name="description_label">Deskripsi</string>
 
     <string name="L_Email">Email</string>
     <string name="L_Pass">Password</string>
-    <string name="SignUp">Mendaftar</string>
-
-    <string name="code">Kode</string>
-    <string name="enter_code">Masukkan Kode Disini</string>
-    
-    <string name="forgot_password">Lupa Password?</string>
-    <string name="SignUp_2">Buat Akun Baru Disini</string>
-    <string name="Or">Atau</string>
-    <string name="Google">Lanjutkan dengan Google</string>
     <string name="SignIn">Masuk</string>
-    <string name="SignIn_2">Sudah punya akun? Masuk</string>
-    <string name="FPass_1">Kami akan mengirimkan Kode Verifikasi ke email jika cocok dengan akun yang ada</string>
+    <string name="Welcome_sign">Selamat datang kembali!</string>
+    <string name="SignUp_3">Belum punya akun? Daftar</string>
+    <string name="SignUp">Daftar</string>
+    <string name="SignUp_2">Buat akun Anda untuk memulai</string>
     <string name="name">Nama</string>
-    <string name="SignUp_3">Belum Punya Akun? Daftar</string>
-    <string name="FPass_2">Periksa Email yang dimasukkan untuk Kode Verifikasi</string>
+    <string name="label_name">Nama</string>
+    <string name="SignIn_2">Sudah punya akun? Masuk</string>
 
-    <string name="EditPP">Edit Foto</string>
-    <string name="JobNow">Pekerjaan Sekarang</string>
-    <string name="tagline_pp">Tagline</string>
-    <string name="youtube">Youtube</string>
-    <string name="instagram">Instagram</string>
-    <string name="facebook">Facebook</string>
-    <string name="Save">Simpan</string>
+    <string name="next">Lanjut</string>
+    <string name="finish">Selesai</string>
+    <string name="onboarding_title_1">Selamat Datang di MyAura</string>
+    <string name="onboarding_desc_1">Platform untuk menunjukkan siapa diri Anda dan berbagi keahlian Anda dengan dunia.</string>
+    <string name="onboarding_title_2">Bangun Portofolio Anda</string>
+    <string name="onboarding_desc_2">Unggah proyek, sertifikat, dan pencapaian terbaik Anda dalam satu tempat yang indah.</string>
+    <string name="onboarding_title_3">Berbagi dan Terhubung</string>
+    <string name="onboarding_desc_3">Tulis artikel, bagikan pemikiran, dan terhubung dengan para profesional lainnya.</string>
 
-    <string name="Add_Box">+Tambah Foto/File</string>
-    <string name="Title">Judul</string>
-    <string name="Desc">Deskripsi</string>
-    <string name="Subject">Subjek</string>
-    <string name="PostAr">Posting Artikel</string>
-    <string name="AddAr">Tambah Artikel</string>
-    <string nama="EditTitle">Edit Judul</string>
-    <string name="SaveEdit">Simpan Edit</string>
+    <string name="profile_picture_cd">Foto Profil</string>
+    <string name="edit_profile_button">Edit Profil</string>
+    <string name="profile_update_success">Profil berhasil diperbarui!</string>
+    <string name="edit_photo">Edit Foto</string>
+    <string name="label_job">Pekerjaan</string>
+    <string name="label_tagline">Tagline</string>
+    <string name="label_bio">Bio</string>
+    <string name="label_linkedin">URL LinkedIn</string>
+    <string name="label_github">URL GitHub</string>
+    <string name="label_instagram">URL Instagram</string>
+    <string name="instagram_cd">Instagram</string>
+    <string name="github_cd">GitHub</string>
+    <string name="linkedin_cd">LinkedIn</string>
+    <string name="cant_open_link">Tidak dapat membuka link. Pastikan URL valid dan ada browser terinstal.</string>
+    <string name="profile_tab_resume">Resume</string>
+    <string name="profile_tab_article">Artikel</string>
+    <string name="new_user">Pengguna Baru</string>
+    <string name="no_profile_prompt">Anda belum memiliki profil. Silakan edit profil Anda.</string>
+    <string name="dark_mode_label">Mode Gelap</string>
+    <string name="logout_button">Keluar</string>
 
-    <string name="add_title">Tambahkan Judul</string>
-    <string name="years_until">DD-MM-YYYY hingga DD-MM-YYYY</string>
-    <string name="skill">Keahlian</string>
-    <string name="url">URL/ID</string>
-    <string name="PostPort">Portofolio Posting</string>
+    <string name="search_user_label">Cari Pengguna</string>
+    <string name="search_cd">Ikon Pencarian</string>
 
-    <string name="dummy">Fulani</string>
-    <string name="dummy2">7h</string>
+    <string name="all_articles_title">Semua Artikel</string>
+    <string name="add_article">Tambah Artikel</string>
+    <string name="post_article_button">Posting Artikel</string>
+    <string name="article_detail_title">Detail Artikel</string>
+    <string name="article_title_label">Judul Artikel</string>
+    <string name="subtitle_label">Sub-Judul / Deskripsi Singkat</string>
+    <string name="content_label">Konten Artikel</string>
+    <string name="edit_article_cd">Edit Artikel</string>
+    <string name="delete_article_cd">Hapus Artikel</string>
+    <string name="add_article_success">Artikel berhasil diposting!</string>
+    <string name="article_update_success">Artikel berhasil diperbarui!</string>
+    <string name="no_articles_available">Belum ada artikel yang tersedia.</string>
+    <string name="no_articles_written">Anda belum menulis artikel.</string>
+    <string name="article_not_found">Artikel tidak ditemukan.</string>
+    <string name="article_cover_image">Gambar Sampul Artikel</string>
+    <string name="add_cover_image">+ Tambah Gambar Sampul</string>
+    <string name="edit_cover_image">+ Ubah Gambar Sampul</string>
+    <string name="author_profile_picture">Foto Profil Penulis</string>
+    <string name="default_user_name">Pengguna</string>
+    <string name="no_job_title">Tidak Ada Pekerjaan</string>
 
-    <string name="Home">Beranda</string>
-    <string name="Search">Cari</string>
-    <string name="Bookmark">Bookmark</string>
-    <string name="Article">Artikel</string>
-    <string name="Settings">Pengaturan</string>
-    <string name="Stats">Statistik</string>
-    <string name="EditProfile">Edit Profil</string>
-    <string name="dummy3">Bersertifikat Basis Data</string>
-    <string name="dummy4">01–01–2023 until 01-01-2025</string>
-    <string name="dummy5">www.example.com/certificate</string>
-    <string name="dummy6">Bersertifikat dalam desain dan pengoptimalan basis data.</string>
+    <string name="add_portfolio">Tambah Portofolio</string>
+    <string name="post_portfolio_button">Posting Portofolio</string>
+    <string name="portfolio_detail_title">Detail Portofolio</string>
+    <string name="portfolio_title_label">Judul Portofolio</string>
+    <string name="edit_portfolio_cd">Edit Portofolio</string>
+    <string name="delete_portfolio_cd">Hapus Portofolio</string>
+    <string name="add_portfolio_success">Portofolio berhasil ditambahkan!</string>
+    <string name="portfolio_update_success">Portofolio berhasil diperbarui!</string>
+    <string name="no_portfolios_added">Anda belum menambahkan portofolio.</string>
+    <string name="portfolio_not_found">Portofolio tidak ditemukan.</string>
+    <string name="portfolio_image_cd">Gambar Portofolio</string>
+    <string name="portfolio_add_image_box">+ Tambah Gambar Portofolio</string>
+    <string name="edit_portfolio_image_box">+ Ubah Gambar Portofolio</string>
+    <string name="portfolio_start_date">Tanggal Mulai</string>
+    <string name="portfolio_end_date">Tanggal Selesai</string>
+    <string name="portfolio_current_project">Saat Ini</string>
+    <string name="now_checkbox_label">Sekarang</string>
+    <string name="skill_label">Keahlian</string>
+    <string name="skill_prefix">Keahlian:</string>
+    <string name="url_label">URL Proyek</string>
+    <string name="url_prefix">URL:</string>
+    <string name="description_heading">Deskripsi:</string>
 
+    <string name="delete_confirmation_title">Konfirmasi Hapus</string>
+    <string name="delete_confirmation_message">Apakah Anda yakin ingin menghapus artikel \'%1$s\'?</string>
+    <string name="delete_portfolio_confirmation_message">Apakah Anda yakin ingin menghapus portofolio \'%1$s\'?</string>
+    <string name="delete_confirmation_message_generic">Apakah Anda yakin ingin menghapus \'%1$s\'?</string>
+
+    <string name="time_just_now">Baru saja</string>
+    <string name="time_minutes_format">%dm</string>
+    <string name="time_hours_format">%dj</string>
+    <string name="time_days_format">%dh</string>
+    <string name="time_long_ago">Lama</string>
+
+    <string name="cd_cover_image">Gambar Sampul</string>
+
+    <string name="refresh_button">Segarkan</string>
+
+    <string name="bottom_nav_profile">Profil</string>
+    <string name="bottom_nav_search">Cari</string>
+    <string name="bottom_nav_article">Artikel</string>
+    <string name="bottom_nav_settings">Pengaturan</string>
 </resources>

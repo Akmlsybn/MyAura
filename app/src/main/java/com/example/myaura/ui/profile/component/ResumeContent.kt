@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,8 +39,15 @@ fun ResumeContent(
     if (showDeleteDialog && portfolioToDelete != null) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Konfirmasi Hapus") },
-            text = { Text("Apakah Anda yakin ingin menghapus portofolio '${portfolioToDelete?.title}'?") },
+            title = { Text(stringResource(id = R.string.delete_confirmation_title)) },
+            text = {
+                Text(
+                    stringResource(
+                        id = R.string.delete_portfolio_confirmation_message,
+                        portfolioToDelete?.title.orEmpty()
+                    )
+                )
+            },
             confirmButton = {
                 Button(
                     onClick = {
@@ -48,12 +56,12 @@ fun ResumeContent(
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
                 ) {
-                    Text("Hapus")
+                    Text(stringResource(id = R.string.delete_button))
                 }
             },
             dismissButton = {
                 Button(onClick = { showDeleteDialog = false }) {
-                    Text("Batal")
+                    Text(stringResource(id = R.string.cancel_button))
                 }
             }
         )
@@ -70,7 +78,7 @@ fun ResumeContent(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Add Portfolio",
+                text = stringResource(id = R.string.add_portfolio),
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onBackground
@@ -78,7 +86,7 @@ fun ResumeContent(
             IconButton(onClick = { navController.navigate("add_portfolio") }) {
                 Icon(
                     Icons.Default.Add,
-                    contentDescription = "Add Portfolio",
+                    contentDescription = stringResource(id = R.string.add_portfolio),
                     tint = MaterialTheme.colorScheme.primary
                 )
             }
@@ -89,7 +97,7 @@ fun ResumeContent(
             is ProfileState.Success -> {
                 if (state.portfolios.isEmpty()) {
                     Text(
-                        "Anda belum menambahkan portofolio.",
+                        stringResource(id = R.string.no_portfolios_added),
                         modifier = Modifier.padding(vertical = 16.dp),
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -128,7 +136,8 @@ fun PortfolioCard(
     modifier: Modifier = Modifier,
     item: PortfolioItem,
     onDelete: () -> Unit,
-    onEdit: () -> Unit) {
+    onEdit: () -> Unit
+) {
     Card(
         modifier = modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
@@ -138,7 +147,7 @@ fun PortfolioCard(
             if (item.imageUrl.isNotBlank()) {
                 AsyncImage(
                     model = item.imageUrl,
-                    contentDescription = "Portfolio Image",
+                    contentDescription = stringResource(id = R.string.portfolio_image_cd),
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(150.dp),
@@ -168,7 +177,7 @@ fun PortfolioCard(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Skill: ${item.skill}",
+                    text = "${stringResource(id = R.string.skill_prefix)} ${item.skill}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurface
                 )
@@ -177,14 +186,14 @@ fun PortfolioCard(
                     IconButton(onClick = onEdit) {
                         Icon(
                             Icons.Default.Edit,
-                            contentDescription = "Edit Portfolio",
+                            contentDescription = stringResource(id = R.string.edit_portfolio_cd),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                     IconButton(onClick = onDelete) {
                         Icon(
                             Icons.Default.Delete,
-                            contentDescription = "Delete Portfolio",
+                            contentDescription = stringResource(id = R.string.delete_portfolio_cd),
                             tint = MaterialTheme.colorScheme.error
                         )
                     }

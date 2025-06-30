@@ -12,10 +12,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.example.myaura.R
 import com.example.myaura.domain.model.PortfolioItem
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -29,10 +31,10 @@ fun PortfolioDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Detail Portofolio") },
+                title = { Text(stringResource(id = R.string.portfolio_detail_title)) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Kembali")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(id = R.string.back_button))
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -62,7 +64,7 @@ fun PortfolioDetailScreen(
 fun PortfolioDetailContent(item: PortfolioItem?) {
     if (item == null) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("Portofolio tidak ditemukan.", color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Text(stringResource(id = R.string.portfolio_not_found), color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         return
     }
@@ -88,11 +90,11 @@ fun PortfolioDetailContent(item: PortfolioItem?) {
         Spacer(modifier = Modifier.height(8.dp))
         Text(text = item.dateRange, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "Deskripsi:", style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onBackground)
+        Text(text = stringResource(id = R.string.description_heading), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onBackground)
         Text(text = item.description, style = MaterialTheme.typography.bodyLarge, color = MaterialTheme.colorScheme.onSurface)
         Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "Skill: ${item.skill}", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
+        Text(text = "${stringResource(id = R.string.skill_prefix)} ${item.skill}", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
         Spacer(modifier = Modifier.height(8.dp))
-        Text(text = "URL: ${item.projectUrl}", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.primary)
+        Text(text = "${stringResource(id = R.string.url_prefix)} ${item.projectUrl}", style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.primary)
     }
 }

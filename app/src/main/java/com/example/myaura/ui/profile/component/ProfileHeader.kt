@@ -1,6 +1,7 @@
 package com.example.myaura.ui.profile.component
 
 import android.content.Intent
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -53,7 +54,7 @@ fun ProfileHeader(
         ) {
             AsyncImage(
                 model = userProfile.profilePictureUrl.ifEmpty { R.drawable.ic_launcher_background },
-                contentDescription = "Profile Picture",
+                contentDescription = stringResource(id = R.string.profile_picture_cd),
                 modifier = Modifier
                     .size(80.dp)
                     .clip(CircleShape),
@@ -77,7 +78,7 @@ fun ProfileHeader(
                     contentColor = MaterialTheme.colorScheme.onPrimary
                 )
             ) {
-                Text(stringResource(R.string.EditProfile), fontSize = 12.sp)
+                Text(stringResource(id = R.string.edit_profile_button), fontSize = 12.sp)
             }
         }
 
@@ -119,7 +120,7 @@ fun ProfileHeader(
                 if (instagramUrl?.isNotBlank() == true) {
                     Image(
                         painter = painterResource(R.drawable.instagram__1_),
-                        contentDescription = "Instagram",
+                        contentDescription = stringResource(id = R.string.instagram_cd),
                         modifier = Modifier
                             .size(24.dp)
                             .clickable {
@@ -133,7 +134,7 @@ fun ProfileHeader(
                 if (githubUrl?.isNotBlank() == true) {
                     Image(
                         painter = painterResource(R.drawable.github),
-                        contentDescription = "github",
+                        contentDescription = stringResource(id = R.string.github_cd),
                         modifier = Modifier
                             .size(24.dp)
                             .clickable {
@@ -147,7 +148,7 @@ fun ProfileHeader(
                 if (linkedinUrl?.isNotBlank() == true) {
                     Image(
                         painter = painterResource(R.drawable.linkedin),
-                        contentDescription = "Linkedin",
+                        contentDescription = stringResource(id = R.string.linkedin_cd),
                         modifier = Modifier
                             .size(24.dp)
                             .clickable {
@@ -171,6 +172,6 @@ private fun openUrl(context: android.content.Context, url: String) {
         val intent = Intent(Intent.ACTION_VIEW, finalUrl.toUri())
         context.startActivity(intent)
     } catch (e: Exception) {
-        android.widget.Toast.makeText(context, "Tidak dapat membuka link. Pastikan URL valid dan ada browser terinstal.", android.widget.Toast.LENGTH_LONG).show()
+        Toast.makeText(context, R.string.cant_open_link, Toast.LENGTH_LONG).show()
     }
 }

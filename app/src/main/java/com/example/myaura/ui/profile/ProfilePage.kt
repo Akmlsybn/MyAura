@@ -12,12 +12,14 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.myaura.R
 import com.example.myaura.domain.model.Article
 import com.example.myaura.domain.model.PortfolioItem
 import com.example.myaura.domain.model.UserProfile
@@ -59,8 +61,8 @@ fun ProfileScreen(
         val title = (itemToDelete as? PortfolioItem)?.title ?: (itemToDelete as? Article)?.title ?: ""
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
-            title = { Text("Konfirmasi Hapus") },
-            text = { Text("Apakah Anda yakin ingin menghapus '${title}'?") },
+            title = { Text(stringResource(id = R.string.delete_confirmation_title)) },
+            text = { Text(stringResource(id = R.string.delete_confirmation_message_generic, title)) },
             confirmButton = {
                 Button(
                     onClick = {
@@ -73,12 +75,12 @@ fun ProfileScreen(
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
                 ) {
-                    Text("Hapus")
+                    Text(stringResource(id = R.string.delete_button))
                 }
             },
             dismissButton = {
                 Button(onClick = { showDeleteDialog = false; itemToDelete = null }) {
-                    Text("Batal")
+                    Text(stringResource(id = R.string.cancel_button))
                 }
             }
         )
@@ -112,12 +114,12 @@ fun ProfileScreen(
                             )
                         }
                         when (selectedTabIndex) {
-                            0 -> { // Resume Tab
-                                item { AddButtonRow(text = "Add Portfolio", onClick = { mainNavController.navigate("add_portfolio") }) }
+                            0 -> {
+                                item { AddButtonRow(textResId = R.string.add_portfolio, onClick = { mainNavController.navigate("add_portfolio") }) }
                                 if (state.portfolios.isEmpty()) {
                                     item {
                                         Text(
-                                            "Anda belum menambahkan portofolio.",
+                                            stringResource(id = R.string.no_portfolios_added),
                                             modifier = Modifier.padding(16.dp),
                                             color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
@@ -139,11 +141,11 @@ fun ProfileScreen(
                                 }
                             }
                             1 -> {
-                                item { AddButtonRow(text = "Add Article", onClick = { mainNavController.navigate("add_article") }) }
+                                item { AddButtonRow(textResId = R.string.add_article, onClick = { mainNavController.navigate("add_article") }) }
                                 if (state.articles.isEmpty()) {
                                     item {
                                         Text(
-                                            "Anda belum menulis artikel.",
+                                            stringResource(id = R.string.no_articles_written),
                                             modifier = Modifier.padding(16.dp),
                                             color = MaterialTheme.colorScheme.onSurfaceVariant
                                         )
@@ -178,10 +180,10 @@ fun ProfileScreen(
                 is ProfileState.Empty -> {
                     LazyColumn(modifier = Modifier.fillMaxSize()) {
                         item {
-                            ProfileHeader(navController = mainNavController, userProfile = UserProfile(name = "Pengguna Baru"))
+                            ProfileHeader(navController = mainNavController, userProfile = UserProfile(name = stringResource(id = R.string.new_user)))
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(
-                                "Anda belum memiliki profil. Silakan edit profil Anda.",
+                                stringResource(id = R.string.no_profile_prompt),
                                 modifier = Modifier.padding(16.dp),
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -195,7 +197,7 @@ fun ProfileScreen(
 }
 
 @Composable
-private fun AddButtonRow(text: String, onClick: () -> Unit) {
+private fun AddButtonRow(textResId: Int, onClick: () -> Unit) {
     Spacer(modifier = Modifier.height(8.dp))
     Row(
         modifier = Modifier
@@ -204,6 +206,7 @@ private fun AddButtonRow(text: String, onClick: () -> Unit) {
         horizontalArrangement = Arrangement.End,
         verticalAlignment = Alignment.CenterVertically
     ) {
+        val text = stringResource(id = textResId)
         Text(
             text = text,
             fontWeight = FontWeight.SemiBold,

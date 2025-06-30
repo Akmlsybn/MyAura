@@ -156,7 +156,12 @@ class EditPortfolioViewModel @Inject constructor(
                     _editState.value.imageUrl
                 }
 
-                val finalEndDate = if (currentState.isCurrent) "Sekarang" else currentState.endDate
+
+                val finalEndDate = if (currentState.isCurrent) {
+                    context.getString(com.example.myaura.R.string.portfolio_current_project)
+                } else {
+                    currentState.endDate
+                }
                 val dateRange = "${currentState.startDate} - $finalEndDate"
 
                 val updatedPortfolio = PortfolioItem(

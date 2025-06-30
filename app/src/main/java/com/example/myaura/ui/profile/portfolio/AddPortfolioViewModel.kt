@@ -48,7 +48,6 @@ class AddPortfolioViewModel @Inject constructor(
             return
         }
 
-        // 2. Jika bukan proyek saat ini, validasi tanggal selesai
         if (!isCurrent) {
             if (endDateStr == "Tanggal Selesai") {
                 _addState.value = AddPortfolioState(error = "Tanggal selesai harus diisi.")

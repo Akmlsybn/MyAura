@@ -42,9 +42,12 @@ fun EditArticle(
         newImageUri = uri
     }
 
+    val updateSuccessMessage = stringResource(id = R.string.article_update_success)
+    val dismissActionLabel = stringResource(id = R.string.action_dismiss)
+
     LaunchedEffect(key1 = editState.isSuccess) {
         if (editState.isSuccess) {
-            Toast.makeText(context, "Artikel berhasil diperbarui!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, updateSuccessMessage, Toast.LENGTH_SHORT).show()
             navController.popBackStack()
             viewModel.onNavigationDone()
         }
@@ -55,7 +58,7 @@ fun EditArticle(
         editState.error?.let { errorMessage ->
             snackbarHostState.showSnackbar(
                 message = errorMessage,
-                actionLabel = "Dismiss",
+                actionLabel = dismissActionLabel,
                 duration = SnackbarDuration.Short
             )
             viewModel.onNavigationDone()
@@ -92,7 +95,7 @@ fun EditArticle(
                     if (imageUrlToDisplay.isNotBlank()) {
                         AsyncImage(
                             model = imageUrlToDisplay,
-                            contentDescription = "Cover Image",
+                            contentDescription = stringResource(id = R.string.cd_cover_image),
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Crop,
                             placeholder = painterResource(id = R.drawable.ic_launcher_background),
@@ -100,7 +103,7 @@ fun EditArticle(
                         )
                     } else {
                         Text(
-                            text = "+ Ubah Gambar Sampul",
+                            text = stringResource(id = R.string.edit_cover_image),
                             textAlign = TextAlign.Center,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -108,11 +111,11 @@ fun EditArticle(
                 }
                 Spacer(modifier = Modifier.height(16.dp))
 
-                OutlinedTextField(value = editState.title, onValueChange = { viewModel.onTitleChange(it) }, label = { Text("Judul Artikel") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = editState.title, onValueChange = { viewModel.onTitleChange(it) }, label = { Text(stringResource(id = R.string.article_title_label)) }, modifier = Modifier.fillMaxWidth())
                 Spacer(modifier = Modifier.height(8.dp))
-                OutlinedTextField(value = editState.subTitle, onValueChange = { viewModel.onSubTitleChange(it) }, label = { Text("Sub-Judul / Deskripsi Singkat") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = editState.subTitle, onValueChange = { viewModel.onSubTitleChange(it) }, label = { Text(stringResource(id = R.string.subtitle_label)) }, modifier = Modifier.fillMaxWidth())
                 Spacer(modifier = Modifier.height(8.dp))
-                OutlinedTextField(value = editState.content, onValueChange = { viewModel.onContentChange(it) }, label = { Text("Konten Artikel") }, modifier = Modifier.fillMaxWidth().height(250.dp))
+                OutlinedTextField(value = editState.content, onValueChange = { viewModel.onContentChange(it) }, label = { Text(stringResource(id = R.string.content_label)) }, modifier = Modifier.fillMaxWidth().height(250.dp))
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -131,7 +134,7 @@ fun EditArticle(
                     if (editState.isLoading) {
                         CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
                     } else {
-                        Text(stringResource(R.string.SaveEdit))
+                        Text(stringResource(R.string.save_edits_button))
                     }
                 }
             }

@@ -1,7 +1,6 @@
 package com.example.myaura.ui.login
 
 import android.util.Log
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -14,7 +13,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.KeyboardType
@@ -46,6 +44,8 @@ fun SignUp(
 
     val snackbarHostState = remember { SnackbarHostState() }
 
+    val dismissActionLabel = stringResource(id = R.string.action_dismiss)
+
     LaunchedEffect(key1 = signUpState.isSuccess) {
         if (signUpState.isSuccess) {
             navController.navigate("profile_page") { popUpTo(0) }
@@ -57,7 +57,7 @@ fun SignUp(
             Log.e("SignUpScreen", "Firebase Error: $errorMessage")
             snackbarHostState.showSnackbar(
                 message = errorMessage,
-                actionLabel = "Dismiss",
+                actionLabel = dismissActionLabel,
                 duration = SnackbarDuration.Short
             )
         }

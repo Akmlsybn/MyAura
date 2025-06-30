@@ -44,9 +44,12 @@ fun AddArticle(
     val addArticleState by viewModel.addArticleState.collectAsState()
     val context = LocalContext.current
 
+    val successMessage = stringResource(id = R.string.add_article_success)
+    val dismissActionLabel = stringResource(id = R.string.action_dismiss)
+
     LaunchedEffect(key1 = addArticleState.isSuccess) {
         if (addArticleState.isSuccess) {
-            Toast.makeText(context, "Artikel berhasil diposting!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, successMessage, Toast.LENGTH_SHORT).show()
             navController.popBackStack()
             viewModel.onNavigationDone()
         }
@@ -57,7 +60,7 @@ fun AddArticle(
         addArticleState.error?.let { errorMessage ->
             snackbarHostState.showSnackbar(
                 message = errorMessage,
-                actionLabel = "Dismiss",
+                actionLabel = dismissActionLabel,
                 duration = SnackbarDuration.Short
             )
             viewModel.onNavigationDone()
@@ -87,13 +90,13 @@ fun AddArticle(
                 if (imageUri != null) {
                     AsyncImage(
                         model = imageUri,
-                        contentDescription = "Cover Image",
+                        contentDescription = stringResource(id = R.string.cd_cover_image),
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )
                 } else {
                     Text(
-                        text = "+ Tambah Gambar Sampul",
+                        text = stringResource(id = R.string.add_cover_image),
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -101,19 +104,19 @@ fun AddArticle(
             }
             Spacer(modifier = Modifier.height(16.dp))
 
-            OutlinedTextField(value = title, onValueChange = { title = it }, label = { Text(stringResource(R.string.Title)) }, modifier = Modifier.fillMaxWidth())
+            OutlinedTextField(value = title, onValueChange = { title = it }, label = { Text(stringResource(R.string.title)) }, modifier = Modifier.fillMaxWidth())
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = subTitle,
                 onValueChange = { subTitle = it },
-                label = { Text("Sub-Judul / Deskripsi Singkat") },
+                label = { Text(stringResource(id = R.string.subtitle_label)) },
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = content,
                 onValueChange = { content = it },
-                label = { Text("Konten Artikel") },
+                label = { Text(stringResource(id = R.string.content_label)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(250.dp)
@@ -136,7 +139,7 @@ fun AddArticle(
                 if (addArticleState.isLoading) {
                     CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
                 } else {
-                    Text(stringResource(R.string.PostAr))
+                    Text(stringResource(R.string.post_article_button))
                 }
             }
         }

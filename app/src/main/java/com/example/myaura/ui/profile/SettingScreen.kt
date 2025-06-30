@@ -8,9 +8,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.example.myaura.R
 
 @Composable
 fun SettingsScreen(
@@ -33,7 +35,7 @@ fun SettingsScreen(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                "Dark Mode",
+                stringResource(id = R.string.dark_mode_label),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -66,7 +68,7 @@ fun SettingsScreen(
             ),
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Logout")
+            Text(stringResource(id = R.string.logout_button))
         }
     }
 }

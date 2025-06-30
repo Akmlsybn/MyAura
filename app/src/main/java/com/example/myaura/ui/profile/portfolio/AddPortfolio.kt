@@ -38,8 +38,8 @@ fun PortfolioForm(
     viewModel: AddPortfolioViewModel = hiltViewModel()
 ) {
     var title by rememberSaveable { mutableStateOf("") }
-    var startDateText by rememberSaveable { mutableStateOf("Tanggal Mulai") }
-    var endDateText by rememberSaveable { mutableStateOf("Tanggal Selesai") }
+    var startDateText by rememberSaveable { mutableStateOf(navController.context.getString(R.string.portfolio_start_date)) }
+    var endDateText by rememberSaveable { mutableStateOf(navController.context.getString(R.string.portfolio_end_date)) }
     var isCurrentProject by rememberSaveable { mutableStateOf(false) }
     var showDatePicker by remember { mutableStateOf(false) }
     var datePickerTarget by remember { mutableStateOf<DatePickerTarget?>(null) }
@@ -54,10 +54,11 @@ fun PortfolioForm(
     }
     val addState by viewModel.addState.collectAsState()
     val context = LocalContext.current
+    val addSuccessMessage = stringResource(id = R.string.add_portfolio_success)
 
     LaunchedEffect(key1 = addState) {
         if (addState.isSuccess) {
-            Toast.makeText(context, "Portofolio berhasil ditambahkan!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, addSuccessMessage, Toast.LENGTH_SHORT).show()
             navController.popBackStack()
             viewModel.onNavigationDone()
         }
@@ -84,12 +85,12 @@ fun PortfolioForm(
                         showDatePicker = false
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-                ) { Text("OK") }
+                ) { Text(stringResource(id = R.string.ok_button)) }
             },
             dismissButton = {
-                Button(onClick = { showDatePicker = false }) { Text("Batal") }
+                Button(onClick = { showDatePicker = false }) { Text(stringResource(id = R.string.cancel_button)) }
             }
-        ){
+        ) {
             DatePicker(state = datePickerState)
         }
     }
@@ -108,19 +109,19 @@ fun PortfolioForm(
                 .fillMaxWidth()
                 .height(200.dp)
                 .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(8.dp))
-                .clickable { imagePickerLauncher.launch("image/*")},
+                .clickable { imagePickerLauncher.launch("image/*") },
             contentAlignment = Alignment.Center
         ) {
-            if (imageUri != null){
+            if (imageUri != null) {
                 AsyncImage(
                     model = imageUri,
-                    contentDescription = "Image",
+                    contentDescription = stringResource(id = R.string.portfolio_image_cd),
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
             } else {
                 Text(
-                    text = stringResource(R.string.Add_Box),
+                    text = stringResource(R.string.portfolio_add_image_box),
                     textAlign = TextAlign.Center,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -129,7 +130,7 @@ fun PortfolioForm(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        OutlinedTextField(value = title, onValueChange = { title = it }, label = { Text("Judul Portofolio") }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(value = title, onValueChange = { title = it }, label = { Text(stringResource(id = R.string.portfolio_title_label)) }, modifier = Modifier.fillMaxWidth())
         Spacer(modifier = Modifier.height(8.dp))
 
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -158,7 +159,7 @@ fun PortfolioForm(
                     .padding(16.dp)
             ) {
                 Text(
-                    text = if (isCurrentProject) "Saat Ini" else endDateText,
+                    text = if (isCurrentProject) stringResource(id = R.string.portfolio_current_project) else endDateText,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = if (isEndDateEnabled) 1f else 0.4f)
                 )
             }
@@ -172,13 +173,13 @@ fun PortfolioForm(
                 onCheckedChange = { isCurrentProject = it },
                 colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary)
             )
-            Text("Sekarang", color = MaterialTheme.colorScheme.onSurface)
+            Text(stringResource(id = R.string.now_checkbox_label), color = MaterialTheme.colorScheme.onSurface)
         }
 
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(value = skill, onValueChange = { skill = it }, label = { Text(stringResource(R.string.skill)) }, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(value = url, onValueChange = { url = it }, label = { Text(stringResource(R.string.url)) }, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(value = description, onValueChange = { description = it }, label = { Text(stringResource(R.string.Desc)) }, modifier = Modifier.fillMaxWidth().height(100.dp))
+        OutlinedTextField(value = skill, onValueChange = { skill = it }, label = { Text(stringResource(R.string.skill_label)) }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(value = url, onValueChange = { url = it }, label = { Text(stringResource(R.string.url_label)) }, modifier = Modifier.fillMaxWidth())
+        OutlinedTextField(value = description, onValueChange = { description = it }, label = { Text(stringResource(R.string.description_label)) }, modifier = Modifier.fillMaxWidth().height(100.dp))
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -186,8 +187,8 @@ fun PortfolioForm(
             onClick = {
                 viewModel.onAddPortfolioClicked(
                     title = title,
-                    startDateStr = startDateText,
-                    endDateStr = endDateText,
+                    startDateStr = if (startDateText == navController.context.getString(R.string.portfolio_start_date)) "" else startDateText,
+                    endDateStr = if (endDateText == navController.context.getString(R.string.portfolio_end_date)) "" else endDateText,
                     isCurrent = isCurrentProject,
                     skill = skill,
                     projectUrl = url,
@@ -208,7 +209,7 @@ fun PortfolioForm(
             if (addState.isLoading) {
                 CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
             } else {
-                Text(stringResource(R.string.PostPort))
+                Text(stringResource(R.string.post_portfolio_button))
             }
         }
     }

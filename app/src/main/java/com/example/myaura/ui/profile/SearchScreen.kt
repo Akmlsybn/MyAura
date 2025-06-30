@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import com.example.myaura.R
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 
 @Composable
@@ -39,18 +40,21 @@ fun SearchScreen(
     val searchQuery by viewModel.searchQuery.collectAsState()
     val searchResults by viewModel.searchResults.collectAsState()
 
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(16.dp)) {
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { viewModel.onQueryChange(it) },
-            label = { Text("Cari Pengguna") },
-            leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search") },
+            label = { Text(stringResource(id = R.string.search_user_label)) },
+            leadingIcon = { Icon(Icons.Default.Search, contentDescription = stringResource(id = R.string.search_cd)) },
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(16.dp))
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             items(searchResults) { user ->
                 UserCard(user = user, onClick = {
+
                     navController.navigate("profile_page/${user.uid}")
                 })
             }
@@ -61,7 +65,9 @@ fun SearchScreen(
 @Composable
 fun UserCard(user: UserProfile, onClick: () -> Unit) {
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
     ) {
@@ -72,8 +78,10 @@ fun UserCard(user: UserProfile, onClick: () -> Unit) {
         ) {
             AsyncImage(
                 model = user.profilePictureUrl,
-                contentDescription = "Profile Picture",
-                modifier = Modifier.size(60.dp).clip(CircleShape),
+                contentDescription = stringResource(id = R.string.profile_picture_cd),
+                modifier = Modifier
+                    .size(60.dp)
+                    .clip(CircleShape),
                 contentScale = ContentScale.Crop,
                 placeholder = painterResource(id = R.drawable.ic_launcher_background),
                 error = painterResource(id = R.drawable.ic_launcher_background)

@@ -49,9 +49,12 @@ fun EditPortfolio(
     var showDatePicker by remember { mutableStateOf(false) }
     var datePickerTarget by remember { mutableStateOf<DatePickerTarget?>(null) }
 
+    val updateSuccessMessage = stringResource(id = R.string.portfolio_update_success)
+    val dismissActionLabel = stringResource(id = R.string.action_dismiss)
+
     LaunchedEffect(key1 = editState.isSuccess) {
         if (editState.isSuccess) {
-            Toast.makeText(context, "Portofolio berhasil diperbarui!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, updateSuccessMessage, Toast.LENGTH_SHORT).show()
             navController.popBackStack()
             viewModel.onNavigationDone()
         }
@@ -62,7 +65,7 @@ fun EditPortfolio(
         editState.error?.let { errorMessage ->
             snackbarHostState.showSnackbar(
                 message = errorMessage,
-                actionLabel = "Dismiss",
+                actionLabel = dismissActionLabel,
                 duration = SnackbarDuration.Short
             )
             viewModel.onNavigationDone()
@@ -87,10 +90,10 @@ fun EditPortfolio(
                         showDatePicker = false
                     },
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
-                ) { Text("OK") }
+                ) { Text(stringResource(id = R.string.ok_button)) }
             },
             dismissButton = {
-                Button(onClick = { showDatePicker = false }) { Text("Batal") }
+                Button(onClick = { showDatePicker = false }) { Text(stringResource(id = R.string.cancel_button)) }
             }
         ) {
             DatePicker(state = datePickerState)
@@ -127,7 +130,7 @@ fun EditPortfolio(
                     if (imageUrlToDisplay.toString().isNotBlank()) {
                         AsyncImage(
                             model = imageUrlToDisplay,
-                            contentDescription = "Portfolio Image",
+                            contentDescription = stringResource(id = R.string.portfolio_image_cd),
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Crop,
                             placeholder = painterResource(id = R.drawable.ic_launcher_background),
@@ -135,7 +138,7 @@ fun EditPortfolio(
                         )
                     } else {
                         Text(
-                            text = stringResource(R.string.Add_Box),
+                            text = stringResource(R.string.edit_portfolio_image_box),
                             textAlign = TextAlign.Center,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
@@ -143,7 +146,7 @@ fun EditPortfolio(
                 }
                 Spacer(modifier = Modifier.height(16.dp))
 
-                OutlinedTextField(value = editState.title, onValueChange = { viewModel.onTitleChange(it) }, label = { Text("Judul Portofolio") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = editState.title, onValueChange = { viewModel.onTitleChange(it) }, label = { Text(stringResource(id = R.string.portfolio_title_label)) }, modifier = Modifier.fillMaxWidth())
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -157,7 +160,7 @@ fun EditPortfolio(
                             }
                             .padding(16.dp)
                     ) {
-                        Text(text = editState.startDate, color = MaterialTheme.colorScheme.onSurface)
+                        Text(text = editState.startDate.ifEmpty { stringResource(id = R.string.portfolio_start_date) }, color = MaterialTheme.colorScheme.onSurface)
                     }
 
                     val isEndDateEnabled = !editState.isCurrent
@@ -172,7 +175,7 @@ fun EditPortfolio(
                             .padding(16.dp)
                     ) {
                         Text(
-                            text = if (editState.isCurrent) "Saat Ini" else editState.endDate,
+                            text = if (editState.isCurrent) stringResource(id = R.string.portfolio_current_project) else editState.endDate.ifEmpty { stringResource(id = R.string.portfolio_end_date) },
                             color = MaterialTheme.colorScheme.onSurface.copy(alpha = if (isEndDateEnabled) 1f else 0.4f)
                         )
                     }
@@ -186,13 +189,13 @@ fun EditPortfolio(
                         onCheckedChange = { viewModel.onIsCurrentChange(it) },
                         colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary)
                     )
-                    Text("Sekarang", color = MaterialTheme.colorScheme.onSurface)
+                    Text(stringResource(id = R.string.now_checkbox_label), color = MaterialTheme.colorScheme.onSurface)
                 }
                 Spacer(modifier = Modifier.height(8.dp))
 
-                OutlinedTextField(value = editState.skill, onValueChange = { viewModel.onSkillChange(it) }, label = { Text(stringResource(R.string.skill)) }, modifier = Modifier.fillMaxWidth())
-                OutlinedTextField(value = editState.projectUrl, onValueChange = { viewModel.onUrlChange(it) }, label = { Text(stringResource(R.string.url)) }, modifier = Modifier.fillMaxWidth())
-                OutlinedTextField(value = editState.description, onValueChange = { viewModel.onDescriptionChange(it) }, label = { Text(stringResource(R.string.Desc)) }, modifier = Modifier.fillMaxWidth().height(100.dp))
+                OutlinedTextField(value = editState.skill, onValueChange = { viewModel.onSkillChange(it) }, label = { Text(stringResource(R.string.skill_label)) }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = editState.projectUrl, onValueChange = { viewModel.onUrlChange(it) }, label = { Text(stringResource(R.string.url_label)) }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = editState.description, onValueChange = { viewModel.onDescriptionChange(it) }, label = { Text(stringResource(R.string.description_label)) }, modifier = Modifier.fillMaxWidth().height(100.dp))
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -211,7 +214,7 @@ fun EditPortfolio(
                     if (editState.isLoading) {
                         CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
                     } else {
-                        Text(stringResource(R.string.SaveEdit))
+                        Text(stringResource(R.string.save_edits_button))
                     }
                 }
             }

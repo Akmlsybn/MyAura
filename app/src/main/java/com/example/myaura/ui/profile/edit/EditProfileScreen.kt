@@ -45,9 +45,12 @@ fun EditProfileScreen(
         imageUri = uri
     }
 
+    val updateSuccessMessage = stringResource(id = R.string.profile_update_success)
+    val dismissActionLabel = stringResource(id = R.string.action_dismiss)
+
     LaunchedEffect(key1 = editState.isSuccess) {
         if (editState.isSuccess) {
-            Toast.makeText(context, "Profil berhasil diperbarui!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, updateSuccessMessage, Toast.LENGTH_SHORT).show()
             navController.popBackStack()
             viewModel.onNavigationDone()
         }
@@ -58,7 +61,7 @@ fun EditProfileScreen(
         editState.error?.let { errorMessage ->
             snackbarHostState.showSnackbar(
                 message = errorMessage,
-                actionLabel = "Dismiss",
+                actionLabel = dismissActionLabel,
                 duration = SnackbarDuration.Short
             )
             viewModel.onNavigationDone()
@@ -87,24 +90,26 @@ fun EditProfileScreen(
                 ) {
                     AsyncImage(
                         model = imageUri ?: editState.profilePictureUrl.ifEmpty { R.drawable.ic_launcher_background },
-                        contentDescription = "Profile Picture",
+                        contentDescription = stringResource(id = R.string.profile_picture_cd),
                         placeholder = painterResource(id = R.drawable.ic_launcher_background),
-                        modifier = Modifier.size(100.dp).clip(CircleShape),
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(CircleShape),
                         contentScale = ContentScale.Crop
                     )
                 }
                 Spacer(modifier = Modifier.height(8.dp))
-                Text("Edit Photo", color = MaterialTheme.colorScheme.onBackground)
+                Text(stringResource(id = R.string.edit_photo), color = MaterialTheme.colorScheme.onBackground)
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                OutlinedTextField(value = editState.name, onValueChange = { viewModel.onNameChange(it) }, label = { Text("Nama") }, modifier = Modifier.fillMaxWidth())
-                OutlinedTextField(value = editState.job, onValueChange = { viewModel.onJobChange(it) }, label = { Text("Pekerjaan") }, modifier = Modifier.fillMaxWidth())
-                OutlinedTextField(value = editState.tagline, onValueChange = { viewModel.onTaglineChange(it) }, label = { Text("Tagline") }, modifier = Modifier.fillMaxWidth())
-                OutlinedTextField(value = editState.bio, onValueChange = { viewModel.onBioChange(it) }, label = { Text("Bio") }, modifier = Modifier.fillMaxWidth())
-                OutlinedTextField(value = editState.linkedin, onValueChange = { viewModel.onLinkedinChange(it) }, label = { Text("LinkedIn URL") }, modifier = Modifier.fillMaxWidth())
-                OutlinedTextField(value = editState.github, onValueChange = { viewModel.onGithubChange(it) }, label = { Text("GitHub URL") }, modifier = Modifier.fillMaxWidth())
-                OutlinedTextField(value = editState.instagram, onValueChange = { viewModel.onInstagramChange(it) }, label = { Text("Instagram URL") }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = editState.name, onValueChange = { viewModel.onNameChange(it) }, label = { Text(stringResource(id = R.string.label_name)) }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = editState.job, onValueChange = { viewModel.onJobChange(it) }, label = { Text(stringResource(id = R.string.label_job)) }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = editState.tagline, onValueChange = { viewModel.onTaglineChange(it) }, label = { Text(stringResource(id = R.string.label_tagline)) }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = editState.bio, onValueChange = { viewModel.onBioChange(it) }, label = { Text(stringResource(id = R.string.label_bio)) }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = editState.linkedin, onValueChange = { viewModel.onLinkedinChange(it) }, label = { Text(stringResource(id = R.string.label_linkedin)) }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = editState.github, onValueChange = { viewModel.onGithubChange(it) }, label = { Text(stringResource(id = R.string.label_github)) }, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(value = editState.instagram, onValueChange = { viewModel.onInstagramChange(it) }, label = { Text(stringResource(id = R.string.label_instagram)) }, modifier = Modifier.fillMaxWidth())
 
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -112,7 +117,9 @@ fun EditProfileScreen(
                     onClick = {
                         viewModel.onSaveClicked(newImageUri = imageUri)
                     },
-                    modifier = Modifier.fillMaxWidth().height(50.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
                     enabled = !editState.isLoading,
                     shape = RoundedCornerShape(50),
                     colors = ButtonDefaults.buttonColors(
@@ -123,7 +130,7 @@ fun EditProfileScreen(
                     if (editState.isLoading) {
                         CircularProgressIndicator(modifier = Modifier.size(24.dp), color = MaterialTheme.colorScheme.onPrimary)
                     } else {
-                        Text(stringResource(R.string.Save), fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.save_button), fontSize = 16.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             }
